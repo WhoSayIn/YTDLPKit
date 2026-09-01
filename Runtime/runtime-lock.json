@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "python": {
+    "version": "3.13.14",
+    "abi": "3.13",
+    "cpythonSourceCommit": "fd17997c3866d61e0e7bd8201b1d8f35b40a40bd",
+    "supportRelease": "3.13-b14",
+    "supportRevision": 14,
+    "sourceCommit": "54d8ab6ef4fbac4d60706f311a986aee5236c71b",
+    "releasePublishedAt": "2026-06-12T09:42:07Z",
+    "archive": "Python-3.13-iOS-support.b14.tar.gz",
+    "url": "https://github.com/beeware/Python-Apple-support/releases/download/3.13-b14/Python-3.13-iOS-support.b14.tar.gz",
+    "sha256": "8b5cb76ef8d8a2946052479358eeec9d54b4496cb60920e175ec1489b5cf7963"
+  },
+  "components": [
+    { "name": "CPython", "version": "3.13.14", "license": "Python-2.0" },
+    { "name": "BZip2", "version": "1.0.8-2", "license": "bzip2-1.0.6" },
+    { "name": "libFFI", "version": "3.4.7-2", "license": "MIT" },
+    { "name": "mpdecimal", "version": "4.0.0-2", "license": "BSD-2-Clause" },
+    {
+      "name": "OpenSSL",
+      "version": "3.0.18-1",
+      "license": "Apache-2.0",
+      "privacyManifestURL": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.18/os-dep/Apple/PrivacyInfo.xcprivacy",
+      "privacyManifestSHA256": "aff9c890e7b9527243a47c281ba3658c37f1f9d676d63e02b2e36ba38c2af3ee"
+    },
+    { "name": "XZ", "version": "5.6.4-2", "license": "NOASSERTION" },
+    {
+      "name": "Expat",
+      "version": "2.8.1",
+      "license": "MIT",
+      "sourceCommit": "fd17997c3866d61e0e7bd8201b1d8f35b40a40bd",
+      "sourcePath": "Modules/expat/COPYING",
+      "sourceURL": "https://raw.githubusercontent.com/python/cpython/fd17997c3866d61e0e7bd8201b1d8f35b40a40bd/Modules/expat/COPYING",
+      "licenseSHA256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
+    }
+  ]
+}

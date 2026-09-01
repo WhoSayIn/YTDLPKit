@@ -1,0 +1,277 @@
+{
+  "builder": {
+    "python": "3.14.7",
+    "scripts": [
+      {
+        "path": "build-runtime.sh",
+        "sha256": "0d5b5e9ef7ba05ac91d51ed9c4feb1df18900b2b4cb6b977b63a8e0553582b86"
+      },
+      {
+        "path": "fetch-runtime.sh",
+        "sha256": "b87356085fc79a72a517495bcdc3bf9537ec7bd69f30bf71f5aadcf0b3b4c61c"
+      },
+      {
+        "path": "repackage_runtime.py",
+        "sha256": "17fd9d08d4ffa663c13daf513407f1c9bc1d47e459e128cb19d87e044a129acf"
+      },
+      {
+        "path": "smoke-test-simulator.sh",
+        "sha256": "17ddc86a017cc31b45ca47893ba9e9f041213d9aac4ac2dd88761d0008fa47bd"
+      },
+      {
+        "path": "verify-runtime.sh",
+        "sha256": "cfe691e9e7fd67b4a075d4e3f23dd5ef55bf19c666fb6b791f9cc1bc0fe3fa66"
+      }
+    ]
+  },
+  "materials": [
+    {
+      "sha256": "8b5cb76ef8d8a2946052479358eeec9d54b4496cb60920e175ec1489b5cf7963",
+      "uri": "https://github.com/beeware/Python-Apple-support/releases/download/3.13-b14/Python-3.13-iOS-support.b14.tar.gz"
+    },
+    {
+      "sha256": "aff9c890e7b9527243a47c281ba3658c37f1f9d676d63e02b2e36ba38c2af3ee",
+      "uri": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.18/os-dep/Apple/PrivacyInfo.xcprivacy"
+    },
+    {
+      "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87",
+      "uri": "https://raw.githubusercontent.com/python/cpython/fd17997c3866d61e0e7bd8201b1d8f35b40a40bd/Modules/expat/COPYING"
+    },
+    {
+      "sha256": "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6",
+      "uri": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp"
+    },
+    {
+      "sha256": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821",
+      "sourceCommit": "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4",
+      "uri": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip"
+    }
+  ],
+  "schemaVersion": 1,
+  "signing": {
+    "mode": "unsigned"
+  },
+  "subject": [
+    {
+      "name": "PythonRuntime.xcframework.zip",
+      "sha256": "f5daae9761d52799bd4a358935e8421a1d21ddf18f6cd9c7b26beaf2fc5da132"
+    },
+    {
+      "name": "_asyncio.xcframework.zip",
+      "sha256": "a90dd00d760d4ceef94eac078eddf5e66dce8f3fc63be007cdb42717169ace9a"
+    },
+    {
+      "name": "_bisect.xcframework.zip",
+      "sha256": "8cc713363f612ac4b90eaea220160b417bf2a86ea6aeb404b28a5ac35de46f2e"
+    },
+    {
+      "name": "_blake2.xcframework.zip",
+      "sha256": "8222b8b20109c71d474cfab71846ecca7e7fd3bcaa505b32ec2244d188e8b31d"
+    },
+    {
+      "name": "_bz2.xcframework.zip",
+      "sha256": "ae27ed90c6406fa23b2e7923d04f648d196f085dd6d5defd587ad70daec25a28"
+    },
+    {
+      "name": "_codecs_cn.xcframework.zip",
+      "sha256": "28a8cbe48158447cb60fdbdf21249ed1f2f32a42bd664ce0d751e44dfe3632ca"
+    },
+    {
+      "name": "_codecs_hk.xcframework.zip",
+      "sha256": "2fa439a2df8c9825bf6137d43793e067b38622838057a7adfbef48dcb0a1816b"
+    },
+    {
+      "name": "_codecs_iso2022.xcframework.zip",
+      "sha256": "3919dfb9ce7461269fec476a4d3ac9b899f711f3ec58bfb4a46cc77c0e7303de"
+    },
+    {
+      "name": "_codecs_jp.xcframework.zip",
+      "sha256": "cb6e06fa0807b963ebd9b2e4041795f3ce4f95e508f53b2bd7035d757173b4e5"
+    },
+    {
+      "name": "_codecs_kr.xcframework.zip",
+      "sha256": "12334054aed0e21df7976041686d248f706373c38e0c72e788c22e203adc5d01"
+    },
+    {
+      "name": "_codecs_tw.xcframework.zip",
+      "sha256": "c8380ebf0179957b9adc76c1fd171a437e84edaf91f32dc091d11aca368f1ccd"
+    },
+    {
+      "name": "_contextvars.xcframework.zip",
+      "sha256": "2dd2b5f0a6387b90e142dac61f6bf1feeb8ad1ccfd19e8d1256d3b1789098a00"
+    },
+    {
+      "name": "_csv.xcframework.zip",
+      "sha256": "76c5731601b11a1ea1439b7bdf4b737371703ce63e0c4691dce0100404923f9f"
+    },
+    {
+      "name": "_ctypes.xcframework.zip",
+      "sha256": "bc180f8a0cbbd54083860a15c97f940aecf651306134e4abf77e4b772efbc6cf"
+    },
+    {
+      "name": "_datetime.xcframework.zip",
+      "sha256": "f3e567d747b7079290b13cb03fa990b7f9ed989ab64c83d213e676707a98ef5f"
+    },
+    {
+      "name": "_dbm.xcframework.zip",
+      "sha256": "2377dbd451b64214ab73146bb6124c76c1654344c4506c8f96a4f4976cca24c3"
+    },
+    {
+      "name": "_decimal.xcframework.zip",
+      "sha256": "13fb5be1077f04baa26a60b9b9080eb7bc1c7b0440271c990659a7e9f3593e48"
+    },
+    {
+      "name": "_elementtree.xcframework.zip",
+      "sha256": "772f2c4387ccee05dddc63d3fb3d374692a979e52ad72586de2d851a18b057fd"
+    },
+    {
+      "name": "_hashlib.xcframework.zip",
+      "sha256": "54869a6a6ba66ff92d7aee8910b07dd0027c6cf2edb25f714a0ae0d237551015"
+    },
+    {
+      "name": "_heapq.xcframework.zip",
+      "sha256": "84a0e8f70e698ab344a7de67a5b2470feec273e3df27ecd57731dd2e4731ebe8"
+    },
+    {
+      "name": "_interpchannels.xcframework.zip",
+      "sha256": "8851d42d0dc0db7f577fb11efd5d9f0a9eb541668386cca0ee334a2d67bb96a3"
+    },
+    {
+      "name": "_interpqueues.xcframework.zip",
+      "sha256": "2e57cf8748a88bff929e074304f7d5d1c96354a748d2c7c6483f6293a9ca8ce6"
+    },
+    {
+      "name": "_interpreters.xcframework.zip",
+      "sha256": "46f132aba3d4dd5741268917766d14005987434affa36c3845b1ed92f469655a"
+    },
+    {
+      "name": "_json.xcframework.zip",
+      "sha256": "79362ba8833f1c5621bf187294f8e6d8b0a0340c0135e00363126e88ba15c0f3"
+    },
+    {
+      "name": "_lsprof.xcframework.zip",
+      "sha256": "57d05f5f6510a5d60eb1f0c64eb15539be880bb8395ea9bfa2ffc6c6448fcc8a"
+    },
+    {
+      "name": "_lzma.xcframework.zip",
+      "sha256": "9628dafb38c7ed7990f8092429ca04bfb09bfe15f1fb7c7f0dd371fcb4163d0c"
+    },
+    {
+      "name": "_md5.xcframework.zip",
+      "sha256": "6641659c9b32eacb72630f770beb08174c3f01930263e92e33889cb13cf4d460"
+    },
+    {
+      "name": "_multibytecodec.xcframework.zip",
+      "sha256": "f1875c8b88acf3c44701f66505567c0975ea945326a37d4b2d053f43623a9952"
+    },
+    {
+      "name": "_opcode.xcframework.zip",
+      "sha256": "65e3b61fef87049e027173b8e2969cc428e648ea44057eed2a03e11538ba4022"
+    },
+    {
+      "name": "_pickle.xcframework.zip",
+      "sha256": "f60660ef04394d1acfe992e77fde159c7bc2ac1e625d457ed20840ac2d52b67e"
+    },
+    {
+      "name": "_queue.xcframework.zip",
+      "sha256": "60bdd5e17175cefb89055b1b075d7f2d73e0a3465cce21892adf2d4a1db97178"
+    },
+    {
+      "name": "_random.xcframework.zip",
+      "sha256": "ea375f9c9195dd662394f6f4004c86745dc958408026edbb9a1cc75bc509b4f7"
+    },
+    {
+      "name": "_sha1.xcframework.zip",
+      "sha256": "822741f49f159a6529891791eb78e61e1c569bcb180ea041fa65c80c96d6416c"
+    },
+    {
+      "name": "_sha2.xcframework.zip",
+      "sha256": "775cbab031e7573bb7118d3a13a660ae8595eb17ecf36ea6f6095e9f409b44ee"
+    },
+    {
+      "name": "_sha3.xcframework.zip",
+      "sha256": "8ccf68030f5f621c85e3d370c64f3677a300e2344ff73626ccdf6c243faa4316"
+    },
+    {
+      "name": "_socket.xcframework.zip",
+      "sha256": "972fe326e3ad48a9c9abc7365336318baf73474b467ed2412919b54225b45e65"
+    },
+    {
+      "name": "_sqlite3.xcframework.zip",
+      "sha256": "b96916f0149a6e7b2f77629a35658852022d77b39d6e75b4805c4cfb80de164a"
+    },
+    {
+      "name": "_ssl.xcframework.zip",
+      "sha256": "1b2accc475d8c6ab805661045a22013c4bcfa39691d54d5ac1721f32fe346a4e"
+    },
+    {
+      "name": "_statistics.xcframework.zip",
+      "sha256": "e83e84db5700a0ad9609051a94784da4304e50a0a6417b5cd361a84262a3eeaa"
+    },
+    {
+      "name": "_struct.xcframework.zip",
+      "sha256": "fd63879e2b1873a88b75dc80846ca24614d213986210b2cbf7027d95db143e40"
+    },
+    {
+      "name": "_uuid.xcframework.zip",
+      "sha256": "c1ac1ff8bf160bd1ad46305f4287d895d891524a1cae0f94c41859021d4b4988"
+    },
+    {
+      "name": "_zoneinfo.xcframework.zip",
+      "sha256": "fed2d60a5d8b320f4072c155d534fcb1b6a8044194198914e1633c0ab96ca572"
+    },
+    {
+      "name": "array.xcframework.zip",
+      "sha256": "79b7fd601c2f2c57c34694708f69d03ab480453d5a6ef070e6779c47b8ebcea4"
+    },
+    {
+      "name": "binascii.xcframework.zip",
+      "sha256": "54a87294280c7a467560c45b9b5fa3e15713d661bfb81d4f1ac97628e2a3c0bf"
+    },
+    {
+      "name": "cmath.xcframework.zip",
+      "sha256": "5bf2aed7d9b0b6421c6cd311a3b932d3b0b0058783f694e03e7e5692f12ee454"
+    },
+    {
+      "name": "fcntl.xcframework.zip",
+      "sha256": "1040ded339b0baba3772f5b3a65870bb4c76c23f7118ab2b198f530c49c7832f"
+    },
+    {
+      "name": "math.xcframework.zip",
+      "sha256": "950324123eff089d0600d4b88cdb0b42df0cdf388d36b6875362e5c2d0c0b4cb"
+    },
+    {
+      "name": "mmap.xcframework.zip",
+      "sha256": "3c6f3f2f4ecdcb6afb00fd05083a823d0648db6f25930285cae3466a0b13bd47"
+    },
+    {
+      "name": "pyexpat.xcframework.zip",
+      "sha256": "2656f1f34add0a5c0665f8323c913dfcf3fbda8d75c897a74a4c35b50c9f97b6"
+    },
+    {
+      "name": "resource.xcframework.zip",
+      "sha256": "d987f62c54249da64d9d1f996ec16b2341ca2485957ae06865890a17c35f6e3b"
+    },
+    {
+      "name": "select.xcframework.zip",
+      "sha256": "a096082a57e89c04293086275de64c7933e395e921d74f71139f262469640ed8"
+    },
+    {
+      "name": "termios.xcframework.zip",
+      "sha256": "da4cdc133e6038497e35b4822fc0d4cca3e9ff68dafdc59f6da6fb242fe63641"
+    },
+    {
+      "name": "unicodedata.xcframework.zip",
+      "sha256": "4ad1b41e1df1a3feae46de715d04aa9627cbb60143e6f9b6bc592da4bb3318c4"
+    },
+    {
+      "name": "zlib.xcframework.zip",
+      "sha256": "6ff406d895868b179c70308793c611df2b5ab549a241bf645e067197344a67be"
+    },
+    {
+      "name": "PythonRuntimeResources.zip",
+      "sha256": "86b7a4949d0d1618aa7aeec24f9a9525e2b70cee19f7275bc3a9e0b106345ab0"
+    }
+  ],
+  "transformation": "BeeWare iOS support archive to SwiftPM XCFrameworks and Python resources"
+}

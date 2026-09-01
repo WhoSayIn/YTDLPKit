@@ -1,0 +1,170 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "2026-06-12T09:42:07Z",
+    "creators": [
+      "Tool: YTDLPKit runtime repackager"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://spdx.org/spdxdocs/YTDLPKit-PythonRuntime-b100e02fb80acea35dca60265b6ccede579a95db4da43d537832caf4c55a3bc1",
+  "name": "YTDLPKit-PythonRuntime",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Python-2.0",
+      "name": "CPython",
+      "versionInfo": "3.13.14"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-2",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "bzip2-1.0.6",
+      "name": "BZip2",
+      "versionInfo": "1.0.8-2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-3",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT",
+      "name": "libFFI",
+      "versionInfo": "3.4.7-2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-4",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "BSD-2-Clause",
+      "name": "mpdecimal",
+      "versionInfo": "4.0.0-2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-5",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Apache-2.0",
+      "name": "OpenSSL",
+      "versionInfo": "3.0.18-1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-6",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "name": "XZ",
+      "versionInfo": "5.6.4-2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-7",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MIT",
+      "name": "Expat",
+      "versionInfo": "2.8.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-yt-dlp",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6"
+        }
+      ],
+      "downloadLocation": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Unlicense",
+      "name": "yt-dlp",
+      "packageComment": "Unlicense with bundled third-party components",
+      "versionInfo": "2026.08.19"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-yt-dlp-apple-webkit-jsi",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821"
+        }
+      ],
+      "downloadLocation": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "Apache-2.0",
+      "name": "yt-dlp-apple-webkit-jsi",
+      "packageComment": "Apache-2.0",
+      "versionInfo": "0.1.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-YTDLPKitRuntime",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "YTDLPKit embedded runtime"
+    }
+  ],
+  "relationships": [
+    {
+      "relatedSpdxElement": "SPDXRef-Package-YTDLPKitRuntime",
+      "relationshipType": "DESCRIBES",
+      "spdxElementId": "SPDXRef-DOCUMENT"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-6",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-YTDLPKitRuntime"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-yt-dlp",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-YTDLPKitRuntime"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-yt-dlp-apple-webkit-jsi",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-YTDLPKitRuntime"
+    }
+  ],
+  "spdxVersion": "SPDX-2.3"
+}

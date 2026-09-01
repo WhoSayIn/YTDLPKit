@@ -1,0 +1,96 @@
+{
+  "id": "fixture-video",
+  "title": "Fixture Video",
+  "webpage_url": "https://www.youtube.com/watch?v=fixture-video",
+  "duration": 123.5,
+  "uploader": "Fixture Channel",
+  "description": "Recorded metadata used without a network request.",
+  "thumbnail": "https://i.ytimg.com/vi/fixture-video/maxresdefault.jpg",
+  "formats": [
+    {
+      "format_id": "18",
+      "url": "https://media.example/video-360.mp4?signature=secret",
+      "ext": "mp4",
+      "protocol": "https",
+      "vcodec": "avc1.42001E",
+      "acodec": "mp4a.40.2",
+      "width": 640,
+      "height": 360,
+      "fps": 30,
+      "tbr": 700
+    },
+    {
+      "format_id": "137",
+      "url": "https://media.example/video-1080.mp4?signature=secret",
+      "ext": "mp4",
+      "protocol": "https",
+      "vcodec": "avc1.640028",
+      "acodec": "none",
+      "width": 1920,
+      "height": "1080",
+      "resolution": "1920x1080",
+      "language": "en-US",
+      "fps": 30,
+      "tbr": 4500,
+      "filesize_approx": 10485760,
+      "http_headers": {
+        "User-Agent": "FixtureAgent/1.0",
+        "Referer": "https://www.youtube.com/"
+      }
+    },
+    {
+      "format_id": "248",
+      "url": "https://media.example/video-1080.webm?signature=secret",
+      "ext": "webm",
+      "protocol": "https",
+      "vcodec": "vp9",
+      "acodec": "none",
+      "width": 1920,
+      "height": 1080,
+      "fps": 60,
+      "tbr": 5000
+    },
+    {
+      "format_id": "140",
+      "url": "https://media.example/audio.m4a?signature=secret",
+      "ext": "m4a",
+      "protocol": "https",
+      "vcodec": "none",
+      "acodec": "mp4a.40.2",
+      "abr": 129.5
+    }
+  ],
+  "requested_formats": [
+    {
+      "format_id": "137",
+      "url": "https://media.example/video-1080.mp4?signature=secret",
+      "ext": "mp4",
+      "vcodec": "avc1.640028",
+      "acodec": "none",
+      "height": 1080
+    },
+    {
+      "format_id": "140",
+      "url": "https://media.example/audio.m4a?signature=secret",
+      "ext": "m4a",
+      "vcodec": "none",
+      "acodec": "mp4a.40.2"
+    }
+  ],
+  "subtitles": {
+    "en": [
+      {
+        "url": "https://captions.example/en.vtt?token=secret",
+        "ext": "vtt",
+        "name": "English"
+      }
+    ],
+    "tr": [
+      {
+        "url": "https://captions.example/tr.vtt?token=secret",
+        "ext": "vtt",
+        "name": "Turkish"
+      }
+    ]
+  }
+}

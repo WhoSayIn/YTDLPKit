@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Swift build and unit tests
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: swift --version
+      - name: Build
+        run: swift build
+      - name: Unit tests (live tests excluded)
+        run: swift test --skip LiveIntegrationTests
+
+  format:
+    name: Swift format
+    runs-on: macos-15
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check formatting
+        run: swift format lint --recursive --strict Package.swift Sources Tests Examples
+
+  example:
+    name: Example app
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build for iOS Simulator
+        run: >-
+          xcodebuild build
+          -project Examples/YTDLPKitExample/YTDLPKitExample.xcodeproj
+          -scheme YTDLPKitExample
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+
+  runtime-smoke:
+    name: Embedded Python runtime smoke test
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize CPython and import bundled yt-dlp in iOS Simulator
+        run: >-
+          xcodebuild test
+          -scheme YTDLPKit
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+          -only-testing:YTDLPKitTests/EmbeddedRuntimeSmokeTests
+          CODE_SIGNING_ALLOWED=NO
+
+  documentation:
+    name: DocC
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build documentation
+        run: >-
+          xcodebuild docbuild
+          -scheme YTDLPKit
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO

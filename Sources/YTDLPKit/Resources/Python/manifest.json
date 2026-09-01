@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "modules": [
+    {
+      "name": "yt-dlp",
+      "version": "2026.08.19",
+      "file": "yt-dlp-2026.08.19.pyz",
+      "source": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp",
+      "sha256": "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6",
+      "license": "Unlicense with bundled third-party components"
+    },
+    {
+      "name": "yt-dlp-apple-webkit-jsi",
+      "version": "0.1.1",
+      "file": "yt-dlp-apple-webkit-jsi-0.1.1.zip",
+      "source": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip",
+      "sourceCommit": "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4",
+      "sha256": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821",
+      "license": "Apache-2.0"
+    }
+  ]
+}

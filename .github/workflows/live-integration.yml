@@ -1,0 +1,39 @@
+name: Live integration
+
+on:
+  workflow_dispatch:
+    inputs:
+      acknowledge_live_network:
+        description: Type RUN_LIVE_TESTS to acknowledge external network access
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-integration-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  live:
+    if: inputs.acknowledge_live_network == 'RUN_LIVE_TESTS'
+    runs-on: macos-15
+    timeout-minutes: 20
+    environment: live-integration
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run opt-in live tests
+        run: >-
+          xcodebuild test
+          -scheme YTDLPKit
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+          -only-testing:YTDLPKitTests/LiveIntegrationTests
+          CODE_SIGNING_ALLOWED=NO
+          'OTHER_SWIFT_FLAGS=$(inherited) -DYTDLPKIT_LIVE_TESTS'
+
+      - name: Explain upstream failures
+        if: failure()
+        run: |
+          echo 'Live extraction depends on external services and is intentionally separate from ordinary CI.'
+          echo 'Inspect the failure; do not weaken recorded-fixture tests or add secrets to logs.'

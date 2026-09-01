@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+
+# Swift and binary runtime updates are intentionally reviewed together with
+# checksums, licenses, fixtures, provenance, and device validation. Do not add
+# automatic package updates here without preserving that release process.

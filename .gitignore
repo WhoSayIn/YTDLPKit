@@ -1,0 +1,13 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.ipa
+*.dSYM.zip
+*.xcarchive
+Runtime/Artifacts/
+Runtime/Downloads/
+Runtime/Work/
+local.env

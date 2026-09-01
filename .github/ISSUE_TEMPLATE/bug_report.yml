@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a reproducible YTDLPKit defect without sensitive data
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include cookies, credentials, authorization headers, signed media URLs, or unsanitized Python output.
+  - type: input
+    id: version
+    attributes:
+      label: YTDLPKit version
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Xcode, Swift, iOS, device or Simulator versions
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the smallest sanitized code sample and ordered steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include only sanitized typed errors or log events.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Sensitive-data check
+      options:
+        - label: I removed signed URLs, query strings, cookies, credentials, authorization data, and private local paths.
+          required: true

@@ -1,0 +1,81 @@
+name: Release validation
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Candidate semantic version without the v prefix
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve candidate version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            candidate="${GITHUB_REF_NAME#v}"
+          else
+            candidate="${INPUT_VERSION}"
+          fi
+          echo "candidate=${candidate}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate release metadata and immutable artifact references
+        run: .github/scripts/validate-release.sh '${{ steps.version.outputs.candidate }}'
+
+      - name: Build
+        run: swift build -c release
+
+      - name: Unit tests (live tests excluded)
+        run: swift test --skip LiveIntegrationTests
+
+      - name: Rebuild and verify pinned runtime artifacts
+        run: |
+          Scripts/runtime/build-runtime.sh
+          .github/scripts/validate-vendored-runtime.sh Runtime/Build
+
+      - name: Initialize embedded runtime in iOS Simulator
+        run: >-
+          xcodebuild test
+          -scheme YTDLPKit
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+          -only-testing:YTDLPKitTests/EmbeddedRuntimeSmokeTests
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Check formatting
+        run: swift format lint --recursive --strict Package.swift Sources Tests Examples
+
+      - name: Build DocC
+        run: >-
+          xcodebuild docbuild
+          -scheme YTDLPKit
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Build example app
+        run: >-
+          xcodebuild build
+          -project Examples/YTDLPKitExample/YTDLPKitExample.xcodeproj
+          -scheme YTDLPKitExample
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Verify clean consumer resolution
+        run: .github/scripts/validate-consumer.sh
+
+      - name: Release remains manual
+        run: echo 'Validation passed. This workflow does not publish artifacts or create a GitHub release.'
