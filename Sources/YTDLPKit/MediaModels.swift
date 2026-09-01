@@ -97,6 +97,8 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
   public let protocolName: String?
   public let videoCodec: String?
   public let audioCodec: String?
+  public let videoExtensionName: String?
+  public let audioExtensionName: String?
   public let width: Int?
   public let height: Int?
   public let framesPerSecond: Double?
@@ -121,6 +123,8 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
     case protocolName = "protocol"
     case videoCodec = "vcodec"
     case audioCodec = "acodec"
+    case videoExtensionName = "video_ext"
+    case audioExtensionName = "audio_ext"
     case width, height
     case framesPerSecond = "fps"
     case totalBitrate = "tbr"
@@ -142,6 +146,8 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
     protocolName = try container.decodeIfPresent(String.self, forKey: .protocolName)
     videoCodec = try container.decodeIfPresent(String.self, forKey: .videoCodec)
     audioCodec = try container.decodeIfPresent(String.self, forKey: .audioCodec)
+    videoExtensionName = try container.decodeIfPresent(String.self, forKey: .videoExtensionName)
+    audioExtensionName = try container.decodeIfPresent(String.self, forKey: .audioExtensionName)
     width = try container.decodeLossyIntIfPresent(forKey: .width)
     height = try container.decodeLossyIntIfPresent(forKey: .height)
     framesPerSecond = try container.decodeLossyDoubleIfPresent(forKey: .framesPerSecond)
@@ -158,8 +164,17 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
     httpHeaders = try container.decodeIfPresent([String: String].self, forKey: .httpHeaders) ?? [:]
   }
 
-  public var hasVideo: Bool { videoCodec.map { $0 != "none" } ?? false }
-  public var hasAudio: Bool { audioCodec.map { $0 != "none" } ?? false }
+  public var hasVideo: Bool {
+    videoCodec.map { $0 != "none" }
+      ?? videoExtensionName.map { $0 != "none" }
+      ?? false
+  }
+
+  public var hasAudio: Bool {
+    audioCodec.map { $0 != "none" }
+      ?? audioExtensionName.map { $0 != "none" }
+      ?? false
+  }
 }
 
 /// A subtitle or caption resource.

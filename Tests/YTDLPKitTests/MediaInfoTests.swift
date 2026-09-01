@@ -116,6 +116,32 @@ final class MediaInfoTests: XCTestCase {
     XCTAssertEqual(selected?.languagePreference, 10)
   }
 
+  func testRecognizesHLSAudioWhenYTDLPOmitsAudioCodec() throws {
+    let format = try JSONDecoder().decode(
+      MediaFormat.self,
+      from: Data(
+        #"""
+        {
+          "format_id": "234-19",
+          "url": "https://example.com/original.m3u8",
+          "ext": "mp4",
+          "protocol": "m3u8_native",
+          "vcodec": "none",
+          "video_ext": "none",
+          "audio_ext": "mp4",
+          "resolution": "audio only",
+          "language": "en-US",
+          "language_preference": 10,
+          "format_note": "American English - original (original)"
+        }
+        """#.utf8
+      )
+    )
+
+    XCTAssertTrue(format.hasAudio)
+    XCTAssertFalse(format.hasVideo)
+  }
+
   func testMalformedFixtureProducesTypedDecodingFailure() throws {
     let response = RuntimeResponse(sanitizedJSON: try Fixture.data(named: "malformed.json"))
     XCTAssertThrowsError(try RuntimeResponseDecoder.decodeMediaInfo(from: response)) { error in
