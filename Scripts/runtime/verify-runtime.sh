@@ -66,8 +66,9 @@ assert {
     "relatedSpdxElement": expat["SPDXID"],
 } in sbom["relationships"]
 python_resources = {resource["name"]: resource for resource in manifest["pythonResources"]}
-assert set(python_resources) == {"yt-dlp", "yt-dlp-apple-webkit-jsi"}
+assert set(python_resources) == {"certifi", "yt-dlp", "yt-dlp-apple-webkit-jsi"}
 assert python_resources["yt-dlp"]["version"] == "2026.08.19"
+assert python_resources["certifi"]["version"] == "2026.7.22"
 provider_resource = python_resources["yt-dlp-apple-webkit-jsi"]
 assert provider_resource["version"] == "0.1.1"
 assert provider_resource["sourceCommit"] == "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4"
@@ -81,6 +82,7 @@ for resource in python_resources.values():
     assert package["downloadLocation"] == resource["source"]
     assert package["checksums"] == [{"algorithm": "SHA256", "checksumValue": resource["sha256"]}]
     assert package["licenseDeclared"] == {
+        "certifi": "MPL-2.0",
         "yt-dlp": "Unlicense",
         "yt-dlp-apple-webkit-jsi": "Apache-2.0",
     }[resource["name"]]

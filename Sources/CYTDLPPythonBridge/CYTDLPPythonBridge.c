@@ -111,6 +111,7 @@ bool ytdlpkit_python_initialize(
     const char *stdlib_zip,
     const char *platform_library,
     const char *dynamic_modules,
+    const char *certifi_module,
     const char *ytdlp_module,
     const char *plugin_module,
     char **error) {
@@ -159,6 +160,8 @@ bool ytdlpkit_python_initialize(
     status = PyStatus_Error("Could not add the platform-library path");
   if (!PyStatus_Exception(status) && !append_path(&config, dynamic_modules, error))
     status = PyStatus_Error("Could not add the dynamic-module path");
+  if (!PyStatus_Exception(status) && !append_path(&config, certifi_module, error))
+    status = PyStatus_Error("Could not add the certifi path");
   if (!PyStatus_Exception(status) && !append_path(&config, ytdlp_module, error))
     status = PyStatus_Error("Could not add the yt-dlp path");
   if (!PyStatus_Exception(status) && !append_path(&config, plugin_module, error))
@@ -182,9 +185,12 @@ bool ytdlpkit_python_initialize(
       "import json\n"
       "import yt_dlp\n"
       "from yt_dlp.version import __version__ as _ytdlpkit_version\n"
+      "from yt_dlp.dependencies import certifi as _ytdlpkit_certifi\n"
       "from _ytdlpkit_native import log as _native_log, cancelled as _native_cancelled\n"
       "if not hasattr(yt_dlp, 'YoutubeDL') or not hasattr(yt_dlp.YoutubeDL, 'sanitize_info'):\n"
       "    raise RuntimeError('yt-dlp is missing the required YoutubeDL API')\n"
+      "if _ytdlpkit_certifi is None:\n"
+      "    raise RuntimeError('certifi is unavailable')\n"
       "try: _ytdlpkit_version_tuple = tuple(int(part) for part in _ytdlpkit_version.split('.')[:3])\n"
       "except (TypeError, ValueError): raise RuntimeError('yt-dlp reported an invalid version')\n"
       "if len(_ytdlpkit_version_tuple) != 3 or _ytdlpkit_version_tuple < (2025, 1, 1):\n"
@@ -215,6 +221,7 @@ bool ytdlpkit_python_initialize(
       "    elif request['kind'] == 'search':\n"
       "        target = 'ytsearch%d:%s' % (int(request['limit']), request['query'])\n"
       "        options['noplaylist'] = False\n"
+      "        options['extract_flat'] = True\n"
       "    else: raise ValueError('Unsupported invocation kind')\n"
       "    with yt_dlp.YoutubeDL(options) as ydl:\n"
       "        info = ydl.extract_info(target, download=False)\n"

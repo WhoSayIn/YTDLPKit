@@ -49,8 +49,10 @@ Apple documents privacy-manifest placement and validation in
   the runtime components, including CPython's pinned Expat 2.8.1 copy, in SPDX
   2.3 form with dependency relationships. The inventory also validates and
   records the bundled yt-dlp 2026.08.19 executable ZIP and
-  yt-dlp-apple-webkit-jsi 0.1.1 provider ZIP, including their source download
-  locations, SHA-256 values, licenses, and the provider's pinned source commit.
+  yt-dlp-apple-webkit-jsi 0.1.1 provider ZIP, and certifi 2026.7.22 wheel,
+  including their source download locations, SHA-256 values, licenses, and the
+  provider's pinned source commit. certifi supplies the Mozilla CA bundle used
+  by embedded OpenSSL for verified HTTPS connections.
 
 The release omits only the pinned test/sample extension list recorded in
 `ArtifactManifest.json`: `_ctypes_test`, `_test*`, `_xxtestfuzz`, `xxlimited`,

@@ -7,11 +7,18 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let webpageURL: URL?
   public let duration: TimeInterval?
   public let uploader: String?
+  public let channel: String?
+  public let album: String?
+  public let uploadDate: String?
+  public let timestamp: TimeInterval?
+  public let viewCount: Int64?
+  public let likeCount: Int64?
   public let description: String?
   public let thumbnailURL: URL?
   public let formats: [MediaFormat]
   public let requestedFormats: [MediaFormat]
   public let subtitles: [SubtitleTrack]
+  public let automaticCaptions: [SubtitleTrack]
   /// Decodable playlist/search entries.
   ///
   /// yt-dlp represents private, deleted, and otherwise unavailable entries as
@@ -20,7 +27,12 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let entries: [MediaInfo]
 
   enum CodingKeys: String, CodingKey {
-    case id, title, duration, uploader, description, formats, subtitles, entries
+    case id, title, duration, uploader, channel, album, description, formats, subtitles, entries
+    case timestamp
+    case uploadDate = "upload_date"
+    case viewCount = "view_count"
+    case likeCount = "like_count"
+    case automaticCaptions = "automatic_captions"
     case webpageURL = "webpage_url"
     case thumbnailURL = "thumbnail"
     case requestedFormats = "requested_formats"
@@ -33,6 +45,12 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
     webpageURL = try container.decodeIfPresent(URL.self, forKey: .webpageURL)
     duration = try container.decodeLossyDoubleIfPresent(forKey: .duration)
     uploader = try container.decodeIfPresent(String.self, forKey: .uploader)
+    channel = try container.decodeIfPresent(String.self, forKey: .channel)
+    album = try container.decodeIfPresent(String.self, forKey: .album)
+    uploadDate = try container.decodeIfPresent(String.self, forKey: .uploadDate)
+    timestamp = try container.decodeLossyDoubleIfPresent(forKey: .timestamp)
+    viewCount = try container.decodeLossyInt64IfPresent(forKey: .viewCount)
+    likeCount = try container.decodeLossyInt64IfPresent(forKey: .likeCount)
     description = try container.decodeIfPresent(String.self, forKey: .description)
     thumbnailURL = try container.decodeIfPresent(URL.self, forKey: .thumbnailURL)
     formats = try container.decodeIfPresent([MediaFormat].self, forKey: .formats) ?? []
@@ -48,6 +66,17 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
         forKey: .subtitles
       ) ?? [:]
     subtitles = subtitleGroups.flatMap { language, payloads in
+      payloads.map { SubtitleTrack(language: language, payload: $0) }
+    }.sorted {
+      ($0.language, $0.name ?? "", $0.format ?? "") < ($1.language, $1.name ?? "", $1.format ?? "")
+    }
+
+    let automaticCaptionGroups =
+      try container.decodeIfPresent(
+        [String: [SubtitlePayload]].self,
+        forKey: .automaticCaptions
+      ) ?? [:]
+    automaticCaptions = automaticCaptionGroups.flatMap { language, payloads in
       payloads.map { SubtitleTrack(language: language, payload: $0) }
     }.sorted {
       ($0.language, $0.name ?? "", $0.format ?? "") < ($1.language, $1.name ?? "", $1.format ?? "")
@@ -78,6 +107,8 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
   public let formatNote: String?
   public let resolution: String?
   public let language: String?
+  /// yt-dlp's relative preference for this format's audio language.
+  public let languagePreference: Int?
   /// Request headers required when consuming `streamURL`.
   ///
   /// Header values may contain credentials and must not be logged or persisted.
@@ -99,6 +130,7 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
     case approximateFileSize = "filesize_approx"
     case formatNote = "format_note"
     case resolution, language
+    case languagePreference = "language_preference"
     case httpHeaders = "http_headers"
   }
 
@@ -122,6 +154,7 @@ public struct MediaFormat: Decodable, Sendable, Equatable {
     formatNote = try container.decodeIfPresent(String.self, forKey: .formatNote)
     resolution = try container.decodeIfPresent(String.self, forKey: .resolution)
     language = try container.decodeIfPresent(String.self, forKey: .language)
+    languagePreference = try container.decodeLossyIntIfPresent(forKey: .languagePreference)
     httpHeaders = try container.decodeIfPresent([String: String].self, forKey: .httpHeaders) ?? [:]
   }
 
@@ -219,18 +252,35 @@ private enum FormatSelector {
   }
 
   private static func score(_ format: MediaFormat, selection: FormatSelection) -> (
-    Int, Int, Double, Double
+    Int, Int, Int, Double, Double
   ) {
     let preferredCodec =
       selection.preferredVideoCodecPrefix.map {
         format.videoCodec?.hasPrefix($0) == true ? 1 : 0
       } ?? 0
     return (
+      audioLanguageScore(format, selection: selection),
       preferredCodec,
       format.height ?? 0,
       format.framesPerSecond ?? 0,
       format.totalBitrate ?? format.videoBitrate ?? format.audioBitrate ?? 0
     )
+  }
+
+  private static func audioLanguageScore(
+    _ format: MediaFormat,
+    selection: FormatSelection
+  ) -> Int {
+    guard selection.mediaKind == .audioOnly || selection.mediaKind == .audiovisual else {
+      return 0
+    }
+
+    let note = format.formatNote?.lowercased() ?? ""
+    var score = format.languagePreference ?? 0
+    if note.contains("original") { score += 100 }
+    if note.contains("default") { score += 50 }
+    if note.contains("dubbed") { score -= 100 }
+    return score
   }
 }
 

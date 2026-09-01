@@ -106,6 +106,22 @@
       "versionInfo": "0.1.1"
     },
     {
+      "SPDXID": "SPDXRef-Package-certifi",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
+        }
+      ],
+      "downloadLocation": "https://files.pythonhosted.org/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "MPL-2.0",
+      "name": "certifi",
+      "packageComment": "MPL-2.0",
+      "versionInfo": "2026.7.22"
+    },
+    {
       "SPDXID": "SPDXRef-Package-YTDLPKitRuntime",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
@@ -162,6 +178,11 @@
     },
     {
       "relatedSpdxElement": "SPDXRef-Package-yt-dlp-apple-webkit-jsi",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-YTDLPKitRuntime"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-certifi",
       "relationshipType": "DEPENDS_ON",
       "spdxElementId": "SPDXRef-Package-YTDLPKitRuntime"
     }

@@ -51,6 +51,11 @@ let matches = try await client.search("artist song", limit: 20)
 Search results and extracted metadata share the same immutable model. Availability
 and completeness depend on the upstream extractor and source.
 
+`MediaInfo` includes common search and presentation metadata such as channel,
+album, upload date, timestamp, view count, like count, manual subtitles, and
+automatic captions when the extractor supplies them. Every field except `id`
+and `title` is optional because flat search results are often incomplete.
+
 ## Handle stream URLs
 
 A format URL is transient output. Use it promptly for the operation that caused

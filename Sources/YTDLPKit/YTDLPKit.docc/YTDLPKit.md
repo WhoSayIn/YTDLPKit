@@ -38,6 +38,10 @@ mux, play, or persist media.
 - ``MediaFormat``
 - ``SubtitleTrack``
 
+Audio format selection uses yt-dlp's language preference and original/default
+format annotations before comparing quality, so a dubbed rendition does not
+replace the source audio merely because it has a higher bitrate.
+
 ### Diagnostics
 
 - ``YTDLPError``

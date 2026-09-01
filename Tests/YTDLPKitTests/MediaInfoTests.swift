@@ -40,10 +40,80 @@ final class MediaInfoTests: XCTestCase {
     XCTAssertEqual(selected?.id, "137")
   }
 
+  func testDecodesOptionalSearchMetadataAndAutomaticCaptions() throws {
+    let payload = Data(
+      #"""
+      {
+        "id": "metadata",
+        "title": "Metadata",
+        "uploader": "Uploader",
+        "channel": "Channel",
+        "album": "Album",
+        "upload_date": "20260831",
+        "timestamp": 1788159600,
+        "view_count": "1234",
+        "like_count": 56,
+        "automatic_captions": {
+          "en": [{"url":"https://example.com/auto.vtt", "ext":"vtt", "name":"English"}]
+        }
+      }
+      """#.utf8
+    )
+
+    let info = try JSONDecoder().decode(MediaInfo.self, from: payload)
+
+    XCTAssertEqual(info.channel, "Channel")
+    XCTAssertEqual(info.album, "Album")
+    XCTAssertEqual(info.uploadDate, "20260831")
+    XCTAssertEqual(info.timestamp, 1_788_159_600)
+    XCTAssertEqual(info.viewCount, 1_234)
+    XCTAssertEqual(info.likeCount, 56)
+    XCTAssertEqual(info.automaticCaptions.map(\.language), ["en"])
+  }
+
   func testSelectsAudioOnlyFormat() throws {
     let info = try JSONDecoder().decode(
       MediaInfo.self, from: Fixture.data(named: "video-info.json"))
     XCTAssertEqual(info.bestFormat(matching: .init(mediaKind: .audioOnly))?.id, "140")
+  }
+
+  func testSelectsOriginalAudioAheadOfHigherBitrateDub() throws {
+    let payload = Data(
+      #"""
+      {
+        "id": "multilingual",
+        "title": "Multilingual",
+        "formats": [
+          {
+            "format_id": "arabic-dub",
+            "url": "https://example.com/arabic.m3u8",
+            "vcodec": "none",
+            "acodec": "mp4a.40.2",
+            "abr": 192,
+            "language": "ar",
+            "language_preference": -1,
+            "format_note": "Dubbed"
+          },
+          {
+            "format_id": "english-original",
+            "url": "https://example.com/english.m3u8",
+            "vcodec": "none",
+            "acodec": "mp4a.40.2",
+            "abr": 128,
+            "language": "en-US",
+            "language_preference": 10,
+            "format_note": "Original, Default"
+          }
+        ]
+      }
+      """#.utf8
+    )
+
+    let info = try JSONDecoder().decode(MediaInfo.self, from: payload)
+    let selected = info.bestFormat(matching: .init(mediaKind: .audioOnly))
+
+    XCTAssertEqual(selected?.id, "english-original")
+    XCTAssertEqual(selected?.languagePreference, 10)
   }
 
   func testMalformedFixtureProducesTypedDecodingFailure() throws {

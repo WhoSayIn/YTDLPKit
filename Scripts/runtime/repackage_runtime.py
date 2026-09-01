@@ -287,10 +287,11 @@ def load_python_resources(repository_root: Path) -> list[dict]:
         raise ValueError("unsupported Python resource manifest schema")
     modules = resource_manifest.get("modules")
     if not isinstance(modules, list) or {module.get("name") for module in modules} != {
+        "certifi",
         "yt-dlp",
         "yt-dlp-apple-webkit-jsi",
     }:
-        raise ValueError("Python resource manifest must contain the two pinned modules")
+        raise ValueError("Python resource manifest must contain the three pinned modules")
     for module in modules:
         resource = resource_root / module["file"]
         if not resource.is_file() or sha256(resource) != module["sha256"]:
@@ -491,6 +492,7 @@ def main() -> None:
         for index, component in enumerate(lock["components"], start=1)
     ]
     resource_license_ids = {
+        "certifi": "MPL-2.0",
         "yt-dlp": "Unlicense",
         "yt-dlp-apple-webkit-jsi": "Apache-2.0",
     }

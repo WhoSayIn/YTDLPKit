@@ -25,6 +25,7 @@ bool ytdlpkit_python_initialize(
     const char *stdlib_zip,
     const char *platform_library,
     const char *dynamic_modules,
+    const char *certifi_module,
     const char *ytdlp_module,
     const char *plugin_module,
     char **error);

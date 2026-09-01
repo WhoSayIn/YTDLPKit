@@ -83,6 +83,7 @@
             resources.standardLibrary.path,
             resources.platformLibrary.path,
             resources.dynamicModules.path,
+            resources.certifiModule.path,
             resources.ytDLPModule.path,
             resources.pluginModule?.path,
             &message
@@ -249,6 +250,7 @@
     let standardLibrary: URL
     let platformLibrary: URL
     let dynamicModules: URL
+    let certifiModule: URL
     let ytDLPModule: URL
     let pluginModule: URL?
     let moduleIdentity: String
@@ -282,6 +284,13 @@
         throw YTDLPError.runtimeUnavailable
       }
       let pythonHome = standardLibrary.deletingLastPathComponent().deletingLastPathComponent()
+
+      let certifiDigest = "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
+      let certifiModule = try requiredResource(
+        names: [("certifi-2026.7.22-py3-none-any", "whl", "Python")],
+        description: "the certifi CA bundle"
+      )
+      try validateFile(certifiModule, expectedSHA256: certifiDigest)
 
       let pluginDigest = "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821"
       let plugin: URL?
@@ -323,9 +332,11 @@
         standardLibrary: standardLibrary,
         platformLibrary: platformLibrary,
         dynamicModules: dynamicModules,
+        certifiModule: certifiModule,
         ytDLPModule: selected,
         pluginModule: plugin,
-        moduleIdentity: "\(identity):challenge-provider:\(providerIdentity)"
+        moduleIdentity:
+          "\(identity):certifi:\(certifiDigest):challenge-provider:\(providerIdentity)"
       )
     }
 

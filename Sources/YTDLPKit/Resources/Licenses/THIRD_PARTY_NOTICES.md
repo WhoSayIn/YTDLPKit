@@ -13,6 +13,8 @@ resource bundle includes exact license files for every redistributed component.
   components recorded in `yt-dlp-THIRD_PARTY_LICENSES.txt`.
 - yt-dlp-apple-webkit-jsi `0.1.1`, Apache License 2.0. This provider is bundled
   but disabled unless the application explicitly opts in before initialization.
+- certifi `2026.7.22`, Mozilla Public License 2.0. Its Mozilla CA bundle is
+  used for verified HTTPS connections from the embedded runtime.
 - BZip2 1.0.8-2, bzip2 license.
 - libffi 3.4.7-2, MIT License.
 - mpdecimal 4.0.0-2, BSD-2-Clause.

@@ -67,6 +67,19 @@ Python values out of the public Swift API.
   `6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821`
 - Local license copy: `ThirdPartyLicenses/yt-dlp-apple-webkit-jsi-LICENSE`
 
+## certifi
+
+- Project: certifi
+- License: Mozilla Public License 2.0
+- Source: https://pypi.org/project/certifi/2026.7.22/
+- Bundled version: `2026.7.22`
+- Bundled wheel SHA-256:
+  `62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775`
+- Local license copy: `ThirdPartyLicenses/certifi-LICENSE`
+
+The wheel supplies the Mozilla CA bundle used by embedded OpenSSL for verified
+HTTPS connections. Certificate verification remains enabled.
+
 ## Binary runtime dependencies
 
 The pinned BeeWare support artifact also contains the following CPython runtime
