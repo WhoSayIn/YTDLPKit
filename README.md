@@ -7,12 +7,11 @@ Python and yt-dlp implementation details private.
 > [!IMPORTANT]
 > YTDLPKit is under active development. The repository contains the Swift API,
 > embedded CPython runtime, pinned Python resources, fixtures, and reproducible
-> runtime build tooling. Use a local checkout for development; no public release
-> has been published.
+> runtime build tooling.
 
 ## Scope
 
-Version 1 provides metadata extraction and search. It does not download,
+It provides metadata extraction and search. It does not download,
 transcode, mux, play, or persist media. It does not require consumer-installed
 Python, FFmpeg, command-line tools, or build scripts.
 
