@@ -14,6 +14,16 @@ public enum YTDLPError: Error, Sendable, Equatable {
   case subprocessFailed(exitCode: Int32?, message: String)
 }
 
+/// A generic classification callers can use to apply their own retry policy.
+public enum YTDLPFailureClassification: Sendable, Equatable {
+  case rateLimited
+  case forbidden
+  case botVerificationRequired
+  case timeout
+  case transientNetwork
+  case other
+}
+
 extension YTDLPError: LocalizedError, CustomStringConvertible {
   public var errorDescription: String? { description }
 
@@ -44,6 +54,67 @@ extension YTDLPError: LocalizedError, CustomStringConvertible {
 }
 
 extension YTDLPError {
+  /// Classifies sanitized yt-dlp failures without prescribing retry behavior.
+  public var failureClassification: YTDLPFailureClassification {
+    if case .timedOut = self {
+      return .timeout
+    }
+
+    let diagnostic: String
+    switch self {
+    case .extractionFailed(let code, let message):
+      diagnostic = [code, message].compactMap { $0 }.joined(separator: " ")
+    case .subprocessFailed(_, let message):
+      diagnostic = message
+    default:
+      return .other
+    }
+
+    let normalized = diagnostic.lowercased()
+    if Self.containsHTTPStatus(429, in: normalized)
+      || normalized.contains("too many requests")
+      || normalized.contains("rate limit")
+    {
+      return .rateLimited
+    }
+    if normalized.contains("sign in to confirm you're not a bot")
+      || normalized.contains("sign in to confirm you’re not a bot")
+      || normalized.contains("captcha")
+      || normalized.contains("bot verification")
+      || normalized.contains("verify you are human")
+      || normalized.contains("verification challenge")
+    {
+      return .botVerificationRequired
+    }
+    if Self.containsHTTPStatus(403, in: normalized) || normalized.contains("forbidden") {
+      return .forbidden
+    }
+    if normalized.contains("timed out") || normalized.contains("timeout") {
+      return .timeout
+    }
+    if [500, 502, 503, 504].contains(where: { Self.containsHTTPStatus($0, in: normalized) })
+      || normalized.contains("temporary failure in name resolution")
+      || normalized.contains("temporarily unavailable")
+      || normalized.contains("network is unreachable")
+      || normalized.contains("connection reset")
+      || normalized.contains("connection aborted")
+      || normalized.contains("connection refused")
+      || normalized.contains("remote end closed connection")
+      || normalized.contains("name or service not known")
+      || normalized.contains("dns lookup failed")
+    {
+      return .transientNetwork
+    }
+    return .other
+  }
+
+  private static func containsHTTPStatus(_ status: Int, in diagnostic: String) -> Bool {
+    diagnostic.contains("http error \(status)")
+      || diagnostic.contains("http \(status)")
+      || diagnostic.contains("status code \(status)")
+      || diagnostic.contains("status: \(status)")
+  }
+
   var sanitized: Self {
     switch self {
     case .invalidRequest(let reason):

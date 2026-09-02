@@ -4,6 +4,42 @@ import XCTest
 @testable import YTDLPKit
 
 final class SecurityAndRegressionTests: XCTestCase {
+  func testExtractionFailureClassification() {
+    let cases: [(YTDLPError, YTDLPFailureClassification)] = [
+      (
+        .extractionFailed(code: "HTTPError", message: "HTTP Error 429: Too Many Requests"),
+        .rateLimited
+      ),
+      (
+        .extractionFailed(code: "HTTPError", message: "HTTP Error 403: Forbidden"),
+        .forbidden
+      ),
+      (
+        .extractionFailed(
+          code: "ExtractorError", message: "Sign in to confirm you're not a bot"
+        ),
+        .botVerificationRequired
+      ),
+      (
+        .extractionFailed(code: "ExtractorError", message: "Please complete the CAPTCHA"),
+        .botVerificationRequired
+      ),
+      (.timedOut, .timeout),
+      (
+        .extractionFailed(code: "NetworkError", message: "Connection reset by peer"),
+        .transientNetwork
+      ),
+      (
+        .extractionFailed(code: "ExtractorError", message: "This video is unavailable"),
+        .other
+      ),
+    ]
+
+    for (error, expected) in cases {
+      XCTAssertEqual(error.failureClassification, expected, "Unexpected class for \(error)")
+    }
+  }
+
   func testLogsRedactSignedURLsCookiesAndCredentials() {
     let event = YTDLPLogEvent(
       level: .error,
