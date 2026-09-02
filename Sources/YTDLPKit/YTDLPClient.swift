@@ -104,6 +104,7 @@ public actor YTDLPClient {
           configuration: RuntimeConfiguration(
             module: configuration.module,
             networkTimeout: configuration.networkTimeout,
+            cookieFileURL: configuration.cookieFileURL,
             enableAppleWebKitChallengeProvider: configuration.enableAppleWebKitChallengeProvider,
             logger: { [handler = configuration.logHandler] event in handler?(event) }
           )
@@ -143,6 +144,11 @@ public actor YTDLPClient {
   private static func validate(_ configuration: YTDLPConfiguration) throws {
     guard configuration.networkTimeout > .zero else {
       throw YTDLPError.sanitizedInvalidRequest("Network timeout must be greater than zero.")
+    }
+    if let cookieFileURL = configuration.cookieFileURL {
+      guard cookieFileURL.isFileURL, !cookieFileURL.path.isEmpty else {
+        throw YTDLPError.sanitizedInvalidRequest("The cookie file must use a local file URL.")
+      }
     }
     if case .local(let url, let digest) = configuration.module {
       guard url.isFileURL else {

@@ -183,6 +183,7 @@ bool ytdlpkit_python_initialize(
 
   static const char *bootstrap =
       "import json\n"
+      "import os\n"
       "import yt_dlp\n"
       "from yt_dlp.version import __version__ as _ytdlpkit_version\n"
       "from yt_dlp.dependencies import certifi as _ytdlpkit_certifi\n"
@@ -215,6 +216,8 @@ bool ytdlpkit_python_initialize(
       "        'writethumbnail': False, 'writeinfojson': False,\n"
       "        'progress_hooks': [_ytdlpkit_check], 'match_filter': _ytdlpkit_check,\n"
       "    }\n"
+      "    cookiefile = request.get('cookieFilePath')\n"
+      "    if cookiefile and os.path.isfile(cookiefile): options['cookiefile'] = cookiefile\n"
       "    if request['kind'] == 'extract':\n"
       "        target = request['url']\n"
       "        options['noplaylist'] = not bool(request['includePlaylists'])\n"

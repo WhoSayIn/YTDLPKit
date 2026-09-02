@@ -122,7 +122,11 @@
         throw YTDLPError.initializationFailed(message: "CPython is not ready.")
       }
 
-      let payload = try PythonInvocationPayload(invocation, timeout: configuration.networkTimeout)
+      let payload = try PythonInvocationPayload(
+        invocation,
+        timeout: configuration.networkTimeout,
+        cookieFileURL: configuration.cookieFileURL
+      )
         .encoded()
       let job = PythonExecutionJob(logger: configuration.logger)
 
@@ -215,10 +219,16 @@
     let query: String?
     let limit: Int?
     let timeout: Double
+    let cookieFilePath: String?
 
-    init(_ invocation: RuntimeInvocation, timeout: Duration) throws {
+    init(
+      _ invocation: RuntimeInvocation,
+      timeout: Duration,
+      cookieFileURL: URL?
+    ) throws {
       let components = timeout.components
       self.timeout = Double(components.seconds) + Double(components.attoseconds) / 1e18
+      cookieFilePath = cookieFileURL?.standardizedFileURL.path
       guard self.timeout.isFinite, self.timeout > 0 else {
         throw YTDLPError.invalidRequest(reason: "Network timeout is outside the supported range.")
       }

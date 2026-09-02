@@ -31,6 +31,34 @@ final class YTDLPClientTests: XCTestCase {
     XCTAssertEqual(configuration?.enableAppleWebKitChallengeProvider, true)
   }
 
+  func testCookieFileURLIsPropagatedToRuntime() async throws {
+    let runtime = FixtureRuntime(
+      response: RuntimeResponse(sanitizedJSON: try Fixture.data(named: "video-info.json"))
+    )
+    let cookieFileURL = URL(fileURLWithPath: "/private/tmp/ytdlp-cookies.txt")
+    let client = try YTDLPClient(
+      configuration: .init(cookieFileURL: cookieFileURL),
+      runtime: runtime
+    )
+
+    _ = try await client.extract(.init(url: URL(string: "https://example.com/video")!))
+
+    let configuration = await runtime.lastConfiguration
+    XCTAssertEqual(configuration?.cookieFileURL, cookieFileURL)
+  }
+
+  func testRejectsNonFileCookieURL() {
+    XCTAssertThrowsError(
+      try YTDLPClient(configuration: .init(
+        cookieFileURL: URL(string: "https://example.com/cookies.txt")
+      ))
+    ) { error in
+      guard case YTDLPError.invalidRequest = error else {
+        return XCTFail("Expected invalidRequest, got \(error)")
+      }
+    }
+  }
+
   func testExtractInitializesOnceAndDecodesFixture() async throws {
     let runtime = FixtureRuntime(
       response: RuntimeResponse(sanitizedJSON: try Fixture.data(named: "video-info.json"))

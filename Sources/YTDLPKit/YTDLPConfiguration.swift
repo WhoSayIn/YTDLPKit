@@ -16,6 +16,11 @@ public struct YTDLPConfiguration: Sendable {
 
   public var module: Module
   public var networkTimeout: Duration
+  /// A private Netscape-format cookie file that yt-dlp may read and update.
+  ///
+  /// The URL must be a local file URL. The file may be created or removed after
+  /// the client is initialized; its presence is checked for every request.
+  public var cookieFileURL: URL?
   /// Enables the bundled experimental Apple WebKit JavaScript challenge provider.
   ///
   /// The provider is excluded from Python's import path by default. Set this
@@ -27,11 +32,13 @@ public struct YTDLPConfiguration: Sendable {
   public init(
     module: Module = .bundled,
     networkTimeout: Duration = .seconds(30),
+    cookieFileURL: URL? = nil,
     enableAppleWebKitChallengeProvider: Bool = false,
     logHandler: (@Sendable (YTDLPLogEvent) -> Void)? = nil
   ) {
     self.module = module
     self.networkTimeout = networkTimeout
+    self.cookieFileURL = cookieFileURL
     self.enableAppleWebKitChallengeProvider = enableAppleWebKitChallengeProvider
     self.logHandler = logHandler
   }

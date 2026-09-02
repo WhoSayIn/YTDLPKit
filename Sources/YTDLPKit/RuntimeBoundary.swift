@@ -8,6 +8,7 @@ protocol YTDLPRuntime: Sendable {
 struct RuntimeConfiguration: Sendable {
   let module: YTDLPConfiguration.Module
   let networkTimeout: Duration
+  let cookieFileURL: URL?
   let enableAppleWebKitChallengeProvider: Bool
   let logger: @Sendable (YTDLPLogEvent) -> Void
 }
