@@ -12,7 +12,7 @@
       },
       {
         "path": "repackage_runtime.py",
-        "sha256": "7358121fa46435e4b89940287ad82ffe8bf2e5b4c68d5551af2507602518b740"
+        "sha256": "df81804e455a3ea86cfc2f76545ac1a3dabd0898ddbbfc64f989a13dd38a1240"
       },
       {
         "path": "smoke-test-simulator.sh",
@@ -20,7 +20,7 @@
       },
       {
         "path": "verify-runtime.sh",
-        "sha256": "849155eee3bf08d5737dd9cc853fbd336a7974f172735d6853c460ad38619898"
+        "sha256": "2e25b988ed265b8bc539311b348775ab06a4697fade9cb0dc8e4e6ea85b9990d"
       }
     ]
   },
@@ -42,9 +42,9 @@
       "uri": "https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp"
     },
     {
-      "sha256": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821",
-      "sourceCommit": "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4",
-      "uri": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip"
+      "sha256": "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173",
+      "sourceCommit": "53dcc9df1bdb385ef7c21ddbebe2903195eaab77",
+      "uri": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/commit/53dcc9df1bdb385ef7c21ddbebe2903195eaab77"
     },
     {
       "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",

@@ -7,7 +7,7 @@
     ]
   },
   "dataLicense": "CC0-1.0",
-  "documentNamespace": "https://spdx.org/spdxdocs/YTDLPKit-PythonRuntime-b100e02fb80acea35dca60265b6ccede579a95db4da43d537832caf4c55a3bc1",
+  "documentNamespace": "https://spdx.org/spdxdocs/YTDLPKit-PythonRuntime-c0bcfacfc2dee15602aa839f3513ee4c50dca7fb6ddefa50e0b5667472ec43b1",
   "name": "YTDLPKit-PythonRuntime",
   "packages": [
     {
@@ -94,16 +94,16 @@
       "checksums": [
         {
           "algorithm": "SHA256",
-          "checksumValue": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821"
+          "checksumValue": "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173"
         }
       ],
-      "downloadLocation": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip",
+      "downloadLocation": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/commit/53dcc9df1bdb385ef7c21ddbebe2903195eaab77",
       "filesAnalyzed": false,
       "licenseConcluded": "NOASSERTION",
       "licenseDeclared": "Apache-2.0",
       "name": "yt-dlp-apple-webkit-jsi",
       "packageComment": "Apache-2.0",
-      "versionInfo": "0.1.1"
+      "versionInfo": "0.1.1-noextapp-53dcc9d"
     },
     {
       "SPDXID": "SPDXRef-Package-certifi",

@@ -302,11 +302,11 @@
       )
       try validateFile(certifiModule, expectedSHA256: certifiDigest)
 
-      let pluginDigest = "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821"
+      let pluginDigest = "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173"
       let plugin: URL?
       if enableAppleWebKitChallengeProvider {
         let selectedPlugin = try requiredResource(
-          names: [("yt-dlp-apple-webkit-jsi-0.1.1", "zip", "Python")],
+          names: [("yt-dlp-apple-webkit-jsi-0.1.1-noextapp-53dcc9d", "zip", "Python")],
           description: "the Apple WebKit JavaScript challenge provider"
         )
         try validateFile(selectedPlugin, expectedSHA256: pluginDigest)

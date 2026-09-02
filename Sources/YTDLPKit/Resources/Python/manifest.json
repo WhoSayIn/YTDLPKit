@@ -11,11 +11,11 @@
     },
     {
       "name": "yt-dlp-apple-webkit-jsi",
-      "version": "0.1.1",
-      "file": "yt-dlp-apple-webkit-jsi-0.1.1.zip",
-      "source": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip",
-      "sourceCommit": "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4",
-      "sha256": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821",
+      "version": "0.1.1-noextapp-53dcc9d",
+      "file": "yt-dlp-apple-webkit-jsi-0.1.1-noextapp-53dcc9d.zip",
+      "source": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/commit/53dcc9df1bdb385ef7c21ddbebe2903195eaab77",
+      "sourceCommit": "53dcc9df1bdb385ef7c21ddbebe2903195eaab77",
+      "sha256": "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173",
       "license": "Apache-2.0"
     },
     {

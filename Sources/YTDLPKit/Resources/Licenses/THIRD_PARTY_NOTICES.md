@@ -11,8 +11,10 @@ resource bundle includes exact license files for every redistributed component.
   (`54d8ab6ef4fbac4d60706f311a986aee5236c71b`), BSD-3-Clause.
 - yt-dlp `2026.08.19`, The Unlicense with separately licensed bundled
   components recorded in `yt-dlp-THIRD_PARTY_LICENSES.txt`.
-- yt-dlp-apple-webkit-jsi `0.1.1`, Apache License 2.0. This provider is bundled
-  but disabled unless the application explicitly opts in before initialization.
+- yt-dlp-apple-webkit-jsi `0.1.1-noextapp-53dcc9d`
+  (`53dcc9df1bdb385ef7c21ddbebe2903195eaab77`), Apache License 2.0. This
+  provider is bundled but disabled unless the application explicitly opts in
+  before initialization.
 - certifi `2026.7.22`, Mozilla Public License 2.0. Its Mozilla CA bundle is
   used for verified HTTPS connections from the embedded runtime.
 - BZip2 1.0.8-2, bzip2 license.

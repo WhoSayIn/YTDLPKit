@@ -297,7 +297,7 @@ def load_python_resources(repository_root: Path) -> list[dict]:
         if not resource.is_file() or sha256(resource) != module["sha256"]:
             raise ValueError(f"Python resource checksum mismatch: {module['name']}")
     provider = next(module for module in modules if module["name"] == "yt-dlp-apple-webkit-jsi")
-    if provider.get("sourceCommit") != "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4":
+    if provider.get("sourceCommit") != "53dcc9df1bdb385ef7c21ddbebe2903195eaab77":
         raise ValueError("unexpected yt-dlp Apple WebKit provider source commit")
     return modules
 

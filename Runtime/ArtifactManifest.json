@@ -373,13 +373,13 @@
       "version": "2026.08.19"
     },
     {
-      "file": "yt-dlp-apple-webkit-jsi-0.1.1.zip",
+      "file": "yt-dlp-apple-webkit-jsi-0.1.1-noextapp-53dcc9d.zip",
       "license": "Apache-2.0",
       "name": "yt-dlp-apple-webkit-jsi",
-      "sha256": "6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821",
-      "source": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/releases/download/v0.1.1/yt-dlp-apple-webkit-jsi.zip",
-      "sourceCommit": "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4",
-      "version": "0.1.1"
+      "sha256": "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173",
+      "source": "https://github.com/grqz/yt-dlp-apple-webkit-jsi/commit/53dcc9df1bdb385ef7c21ddbebe2903195eaab77",
+      "sourceCommit": "53dcc9df1bdb385ef7c21ddbebe2903195eaab77",
+      "version": "0.1.1-noextapp-53dcc9d"
     },
     {
       "file": "certifi-2026.7.22-py3-none-any.whl",

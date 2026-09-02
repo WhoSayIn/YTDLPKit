@@ -70,8 +70,8 @@ assert set(python_resources) == {"certifi", "yt-dlp", "yt-dlp-apple-webkit-jsi"}
 assert python_resources["yt-dlp"]["version"] == "2026.08.19"
 assert python_resources["certifi"]["version"] == "2026.7.22"
 provider_resource = python_resources["yt-dlp-apple-webkit-jsi"]
-assert provider_resource["version"] == "0.1.1"
-assert provider_resource["sourceCommit"] == "e466daca67cc0e1ca63b68cb8fbe80af16ce00a4"
+assert provider_resource["version"] == "0.1.1-noextapp-53dcc9d"
+assert provider_resource["sourceCommit"] == "53dcc9df1bdb385ef7c21ddbebe2903195eaab77"
 for resource in python_resources.values():
     expected_material = {"uri": resource["source"], "sha256": resource["sha256"]}
     if "sourceCommit" in resource:

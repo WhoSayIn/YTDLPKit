@@ -61,10 +61,10 @@ Python values out of the public Swift API.
 - Project: yt-dlp-apple-webkit-jsi
 - License: Apache License 2.0
 - Source: https://github.com/grqz/yt-dlp-apple-webkit-jsi
-- Bundled version/commit: `0.1.1`
-  (`e466daca67cc0e1ca63b68cb8fbe80af16ce00a4`)
+- Bundled version/commit: `0.1.1-noextapp-53dcc9d`
+  (`53dcc9df1bdb385ef7c21ddbebe2903195eaab77`)
 - Bundled resource SHA-256:
-  `6b8267091d45410cdadbc1fe3d1fe5cdb9ed9de0420489790ba1fcc570c81821`
+  `930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173`
 - Local license copy: `ThirdPartyLicenses/yt-dlp-apple-webkit-jsi-LICENSE`
 
 ## certifi
