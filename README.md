@@ -24,19 +24,11 @@ Python, FFmpeg, command-line tools, or build scripts.
 
 ## Installation
 
-After the first functional release is approved and published, add this package
-in Xcode using its GitHub URL and select the `YTDLPKit` product. The
-corresponding package declaration will be:
+Add this package in Xcode using its GitHub URL and select the `YTDLPKit` product.
+The corresponding package declaration will be:
 
 ```swift
-.package(url: "https://github.com/WhoSayIn/YTDLPKit.git", from: "1.0.0")
-```
-
-Until publication is explicitly approved, add the repository as a local
-package (`File > Add Package Dependencies > Add Local`) or use:
-
-```swift
-.package(path: "../YTDLPKit")
+.package(url: "https://github.com/WhoSayIn/YTDLPKit.git", from: "0.1.0")
 ```
 
 Consumers import one module:
