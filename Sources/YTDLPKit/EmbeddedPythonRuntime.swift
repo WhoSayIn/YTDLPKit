@@ -127,7 +127,7 @@
         timeout: configuration.networkTimeout,
         cookieFileURL: configuration.cookieFileURL
       )
-        .encoded()
+      .encoded()
       let job = PythonExecutionJob(logger: configuration.logger)
 
       return try await withTaskCancellationHandler {

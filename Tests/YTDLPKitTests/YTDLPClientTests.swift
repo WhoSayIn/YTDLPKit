@@ -49,9 +49,10 @@ final class YTDLPClientTests: XCTestCase {
 
   func testRejectsNonFileCookieURL() {
     XCTAssertThrowsError(
-      try YTDLPClient(configuration: .init(
-        cookieFileURL: URL(string: "https://example.com/cookies.txt")
-      ))
+      try YTDLPClient(
+        configuration: .init(
+          cookieFileURL: URL(string: "https://example.com/cookies.txt")
+        ))
     ) { error in
       guard case YTDLPError.invalidRequest = error else {
         return XCTFail("Expected invalidRequest, got \(error)")

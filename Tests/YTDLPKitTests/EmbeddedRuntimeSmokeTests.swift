@@ -10,6 +10,7 @@ import XCTest
         configuration: RuntimeConfiguration(
           module: .bundled,
           networkTimeout: .seconds(10),
+          cookieFileURL: nil,
           enableAppleWebKitChallengeProvider: false,
           logger: { _ in }
         )
