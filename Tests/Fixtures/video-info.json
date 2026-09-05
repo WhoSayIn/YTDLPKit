@@ -5,6 +5,11 @@
   "duration": 123.5,
   "uploader": "Fixture Channel",
   "description": "Recorded metadata used without a network request.",
+  "chapters": [
+    {"title": "Introduction", "start_time": 0, "end_time": 40.5},
+    {"title": "Walkthrough", "start_time": 40.5, "end_time": 91},
+    {"title": "Wrap-up", "start_time": 91, "end_time": 123.5}
+  ],
   "thumbnail": "https://i.ytimg.com/vi/fixture-video/maxresdefault.jpg",
   "formats": [
     {

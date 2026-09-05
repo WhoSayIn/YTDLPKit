@@ -19,6 +19,7 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let requestedFormats: [MediaFormat]
   public let subtitles: [SubtitleTrack]
   public let automaticCaptions: [SubtitleTrack]
+  public let chapters: [MediaChapter]
   /// Decodable playlist/search entries.
   ///
   /// yt-dlp represents private, deleted, and otherwise unavailable entries as
@@ -27,7 +28,8 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let entries: [MediaInfo]
 
   enum CodingKeys: String, CodingKey {
-    case id, title, duration, uploader, channel, album, description, formats, subtitles, entries
+    case id, title, duration, uploader, channel, album, description, formats, subtitles, chapters,
+      entries
     case timestamp
     case uploadDate = "upload_date"
     case viewCount = "view_count"
@@ -59,6 +61,9 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
     entries =
       try container.decodeIfPresent([LossyMediaInfo].self, forKey: .entries)?
       .compactMap(\.value) ?? []
+    chapters =
+      try container.decodeIfPresent([LossyMediaChapter].self, forKey: .chapters)?
+      .compactMap(\.value) ?? []
 
     let subtitleGroups =
       try container.decodeIfPresent(
@@ -86,6 +91,37 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   /// Chooses the highest-quality format satisfying `selection`.
   public func bestFormat(matching selection: FormatSelection = .any) -> MediaFormat? {
     FormatSelector.best(in: formats, matching: selection)
+  }
+}
+
+/// A chapter boundary reported by yt-dlp for a media item.
+public struct MediaChapter: Decodable, Sendable, Equatable {
+  public let title: String
+  public let startTime: TimeInterval
+  public let endTime: TimeInterval
+
+  enum CodingKeys: String, CodingKey {
+    case title
+    case startTime = "start_time"
+    case endTime = "end_time"
+  }
+
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    title = try container.decode(String.self, forKey: .title)
+    guard
+      let startTime = try container.decodeLossyDoubleIfPresent(forKey: .startTime),
+      let endTime = try container.decodeLossyDoubleIfPresent(forKey: .endTime)
+    else {
+      throw DecodingError.dataCorrupted(
+        .init(
+          codingPath: container.codingPath,
+          debugDescription: "Chapter start_time and end_time must be numeric."
+        )
+      )
+    }
+    self.startTime = startTime
+    self.endTime = endTime
   }
 }
 
@@ -240,6 +276,19 @@ struct LossyMediaInfo: Decodable {
       return
     }
     value = try? container.decode(MediaInfo.self)
+  }
+}
+
+private struct LossyMediaChapter: Decodable {
+  let value: MediaChapter?
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    if container.decodeNil() {
+      value = nil
+      return
+    }
+    value = try? container.decode(MediaChapter.self)
   }
 }
 

@@ -36,6 +36,7 @@ mux, play, or persist media.
 - ``ExtractionRequest``
 - ``MediaInfo``
 - ``MediaFormat``
+- ``MediaChapter``
 - ``SubtitleTrack``
 
 Audio format selection uses yt-dlp's language preference and original/default

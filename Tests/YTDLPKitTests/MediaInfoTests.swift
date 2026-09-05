@@ -14,6 +14,9 @@ final class MediaInfoTests: XCTestCase {
     XCTAssertEqual(info.formats.count, 4)
     XCTAssertEqual(info.requestedFormats.map(\.id), ["137", "140"])
     XCTAssertEqual(info.subtitles.map(\.language), ["en", "tr"])
+    XCTAssertEqual(info.chapters.map(\.title), ["Introduction", "Walkthrough", "Wrap-up"])
+    XCTAssertEqual(info.chapters.map(\.startTime), [0, 40.5, 91])
+    XCTAssertEqual(info.chapters.last?.endTime, 123.5)
     XCTAssertEqual(info.formats.first(where: { $0.id == "137" })?.height, 1080)
     XCTAssertEqual(info.formats.first(where: { $0.id == "137" })?.fileSize, 10_485_760)
     XCTAssertEqual(info.formats.first(where: { $0.id == "137" })?.resolution, "1920x1080")
@@ -69,6 +72,28 @@ final class MediaInfoTests: XCTestCase {
     XCTAssertEqual(info.viewCount, 1_234)
     XCTAssertEqual(info.likeCount, 56)
     XCTAssertEqual(info.automaticCaptions.map(\.language), ["en"])
+  }
+
+  func testOmitsMalformedChaptersWithoutDiscardingValidChapters() throws {
+    let payload = Data(
+      #"""
+      {
+        "id": "chapters",
+        "title": "Chapters",
+        "chapters": [
+          {"title":"Intro", "start_time":"0", "end_time":10},
+          {"title":"Broken", "start_time":"later", "end_time":20},
+          null
+        ]
+      }
+      """#.utf8
+    )
+
+    let info = try JSONDecoder().decode(MediaInfo.self, from: payload)
+
+    XCTAssertEqual(info.chapters.map(\.title), ["Intro"])
+    XCTAssertEqual(info.chapters.first?.startTime, 0)
+    XCTAssertEqual(info.chapters.first?.endTime, 10)
   }
 
   func testSelectsAudioOnlyFormat() throws {
