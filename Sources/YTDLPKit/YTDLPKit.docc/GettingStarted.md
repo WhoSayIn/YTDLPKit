@@ -52,7 +52,7 @@ Search results and extracted metadata share the same immutable model. Availabili
 and completeness depend on the upstream extractor and source.
 
 `MediaInfo` includes common search and presentation metadata such as channel,
-album, upload date, timestamp, view count, like count, manual subtitles, and
+album, upload date, timestamp, view count, like count, chapters, manual subtitles, and
 automatic captions when the extractor supplies them. Every field except `id`
 and `title` is optional because flat search results are often incomplete.
 
