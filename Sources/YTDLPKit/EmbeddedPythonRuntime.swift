@@ -24,6 +24,10 @@
         configuration: configuration
       )
     }
+
+    #if DEBUG
+      static var resourceValidationCount: Int { PythonResourceLayout.validationCount }
+    #endif
   }
 
   private actor EmbeddedPythonCoordinator {
@@ -31,8 +35,8 @@
 
     private enum State {
       case pending
-      case initializing(moduleIdentity: String, task: Task<Void, any Error>)
-      case ready(moduleIdentity: String)
+      case initializing(resources: PythonResourceLayout, task: Task<Void, any Error>)
+      case ready(resources: PythonResourceLayout)
       case failed(YTDLPError)
     }
 
@@ -40,6 +44,29 @@
     private var state: State = .pending
 
     func initialize(configuration: RuntimeConfiguration) async throws {
+      switch state {
+      case .initializing(let resources, let task):
+        try resources.requireMatchingIdentity(
+          module: configuration.module,
+          enableAppleWebKitChallengeProvider: configuration.enableAppleWebKitChallengeProvider,
+          conflictReason:
+            "CPython initialization has already started with a different yt-dlp module."
+        )
+        try await task.value
+        return
+      case .ready(let resources):
+        try resources.requireMatchingIdentity(
+          module: configuration.module,
+          enableAppleWebKitChallengeProvider: configuration.enableAppleWebKitChallengeProvider,
+          conflictReason: "CPython is already initialized with a different yt-dlp module."
+        )
+        return
+      case .failed(let error):
+        throw error
+      case .pending:
+        break
+      }
+
       let resources: PythonResourceLayout
       do {
         resources = try PythonResourceLayout.resolve(
@@ -52,27 +79,6 @@
         throw YTDLPError.incompatibleModule(
           reason: SensitiveDataRedactor.redact(String(describing: error))
         )
-      }
-      switch state {
-      case .initializing(let identity, let task):
-        guard identity == resources.moduleIdentity else {
-          throw YTDLPError.incompatibleModule(
-            reason: "CPython initialization has already started with a different yt-dlp module."
-          )
-        }
-        try await task.value
-        return
-      case .ready(let identity):
-        guard identity == resources.moduleIdentity else {
-          throw YTDLPError.incompatibleModule(
-            reason: "CPython is already initialized with a different yt-dlp module."
-          )
-        }
-        return
-      case .failed(let error):
-        throw error
-      case .pending:
-        break
       }
 
       let initialization = Task {
@@ -99,11 +105,11 @@
           }
         }
       }
-      state = .initializing(moduleIdentity: resources.moduleIdentity, task: initialization)
+      state = .initializing(resources: resources, task: initialization)
 
       do {
         try await initialization.value
-        state = .ready(moduleIdentity: resources.moduleIdentity)
+        state = .ready(resources: resources)
       } catch let error as YTDLPError {
         state = .failed(error)
         throw error
@@ -256,6 +262,17 @@
   }
 
   private struct PythonResourceLayout: Sendable {
+    private static let certifiDigest =
+      "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
+    private static let pluginDigest =
+      "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173"
+    private static let bundledModuleDigest =
+      "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6"
+    #if DEBUG
+      private static let validationCounter = FileValidationCounter()
+      static var validationCount: Int { validationCounter.value }
+    #endif
+
     let pythonHome: URL
     let standardLibrary: URL
     let platformLibrary: URL
@@ -295,14 +312,12 @@
       }
       let pythonHome = standardLibrary.deletingLastPathComponent().deletingLastPathComponent()
 
-      let certifiDigest = "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
       let certifiModule = try requiredResource(
         names: [("certifi-2026.7.22-py3-none-any", "whl", "Python")],
         description: "the certifi CA bundle"
       )
       try validateFile(certifiModule, expectedSHA256: certifiDigest)
 
-      let pluginDigest = "930ce1c170fa01ee7316e5c8cf82190c1a68961ab3d8592d97b9c3bb919b7173"
       let plugin: URL?
       if enableAppleWebKitChallengeProvider {
         let selectedPlugin = try requiredResource(
@@ -316,26 +331,17 @@
       }
 
       let selected: URL
-      let identity: String
       switch module {
       case .bundled:
         selected = try requiredResource(
           names: [("yt-dlp-2026.08.19", "pyz", "Python")],
           description: "the bundled yt-dlp module"
         )
-        let digest = "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6"
-        try validateFile(selected, expectedSHA256: digest)
-        identity = "bundled:\(digest)"
+        try validateFile(selected, expectedSHA256: bundledModuleDigest)
       case .local(let url, let expectedSHA256):
         selected = try validateLocalModuleURL(url)
         try validateFile(selected, expectedSHA256: expectedSHA256)
-        identity = "local:\(selected.path):\(expectedSHA256.lowercased())"
       }
-
-      let providerIdentity =
-        enableAppleWebKitChallengeProvider
-        ? "apple-webkit-jsi:\(pluginDigest)"
-        : "none"
 
       return Self(
         pythonHome: pythonHome,
@@ -345,9 +351,46 @@
         certifiModule: certifiModule,
         ytDLPModule: selected,
         pluginModule: plugin,
-        moduleIdentity:
-          "\(identity):certifi:\(certifiDigest):challenge-provider:\(providerIdentity)"
+        moduleIdentity: identity(
+          module: module,
+          enableAppleWebKitChallengeProvider: enableAppleWebKitChallengeProvider
+        )
       )
+    }
+
+    func requireMatchingIdentity(
+      module: YTDLPConfiguration.Module,
+      enableAppleWebKitChallengeProvider: Bool,
+      conflictReason: String
+    ) throws {
+      guard
+        moduleIdentity
+          == Self.identity(
+            module: module,
+            enableAppleWebKitChallengeProvider: enableAppleWebKitChallengeProvider
+          )
+      else {
+        throw YTDLPError.incompatibleModule(reason: conflictReason)
+      }
+    }
+
+    private static func identity(
+      module: YTDLPConfiguration.Module,
+      enableAppleWebKitChallengeProvider: Bool
+    ) -> String {
+      let moduleIdentity: String
+      switch module {
+      case .bundled:
+        moduleIdentity = "bundled:\(bundledModuleDigest)"
+      case .local(let url, let expectedSHA256):
+        let path = url.standardizedFileURL.resolvingSymlinksInPath().path
+        moduleIdentity = "local:\(path):\(expectedSHA256.lowercased())"
+      }
+      let providerIdentity =
+        enableAppleWebKitChallengeProvider
+        ? "apple-webkit-jsi:\(pluginDigest)"
+        : "none"
+      return "\(moduleIdentity):certifi:\(certifiDigest):challenge-provider:\(providerIdentity)"
     }
 
     private static func requiredResource(
@@ -400,6 +443,9 @@
     }
 
     private static func validateFile(_ url: URL, expectedSHA256: String) throws {
+      #if DEBUG
+        validationCounter.increment()
+      #endif
       let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
       guard let size = attributes[.size] as? NSNumber, size.int64Value > 0,
         size.int64Value <= 128 * 1_024 * 1_024
@@ -422,6 +468,16 @@
       }
     }
   }
+
+  #if DEBUG
+    private final class FileValidationCounter: @unchecked Sendable {
+      private let lock = NSLock()
+      private var count = 0
+
+      var value: Int { lock.withLock { count } }
+      func increment() { lock.withLock { count += 1 } }
+    }
+  #endif
 
   private enum PythonErrorCode {
     static func parse(_ message: String) -> String? {
