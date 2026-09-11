@@ -51,7 +51,12 @@ final class MediaInfoTests: XCTestCase {
         "title": "Metadata",
         "uploader": "Uploader",
         "channel": "Channel",
+        "track": "Canonical Track",
+        "artists": ["Artist One", "Artist Two"],
         "album": "Album",
+        "album_artists": ["Album Artist"],
+        "release_year": "2026",
+        "track_number": 7,
         "upload_date": "20260831",
         "timestamp": 1788159600,
         "view_count": "1234",
@@ -66,7 +71,12 @@ final class MediaInfoTests: XCTestCase {
     let info = try JSONDecoder().decode(MediaInfo.self, from: payload)
 
     XCTAssertEqual(info.channel, "Channel")
+    XCTAssertEqual(info.track, "Canonical Track")
+    XCTAssertEqual(info.artists, ["Artist One", "Artist Two"])
     XCTAssertEqual(info.album, "Album")
+    XCTAssertEqual(info.albumArtists, ["Album Artist"])
+    XCTAssertEqual(info.releaseYear, 2026)
+    XCTAssertEqual(info.trackNumber, 7)
     XCTAssertEqual(info.uploadDate, "20260831")
     XCTAssertEqual(info.timestamp, 1_788_159_600)
     XCTAssertEqual(info.viewCount, 1_234)

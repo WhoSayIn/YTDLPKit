@@ -8,7 +8,12 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let duration: TimeInterval?
   public let uploader: String?
   public let channel: String?
+  public let track: String?
+  public let artists: [String]
   public let album: String?
+  public let albumArtists: [String]
+  public let releaseYear: Int?
+  public let trackNumber: Int?
   public let uploadDate: String?
   public let timestamp: TimeInterval?
   public let viewCount: Int64?
@@ -28,7 +33,8 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let entries: [MediaInfo]
 
   enum CodingKeys: String, CodingKey {
-    case id, title, duration, uploader, channel, album, description, formats, subtitles, chapters,
+    case id, title, duration, uploader, channel, track, artists, album, description, formats,
+      subtitles, chapters,
       entries
     case timestamp
     case uploadDate = "upload_date"
@@ -38,6 +44,9 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
     case webpageURL = "webpage_url"
     case thumbnailURL = "thumbnail"
     case requestedFormats = "requested_formats"
+    case albumArtists = "album_artists"
+    case releaseYear = "release_year"
+    case trackNumber = "track_number"
   }
 
   public init(from decoder: any Decoder) throws {
@@ -48,7 +57,12 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
     duration = try container.decodeLossyDoubleIfPresent(forKey: .duration)
     uploader = try container.decodeIfPresent(String.self, forKey: .uploader)
     channel = try container.decodeIfPresent(String.self, forKey: .channel)
+    track = try container.decodeIfPresent(String.self, forKey: .track)
+    artists = try container.decodeIfPresent([String].self, forKey: .artists) ?? []
     album = try container.decodeIfPresent(String.self, forKey: .album)
+    albumArtists = try container.decodeIfPresent([String].self, forKey: .albumArtists) ?? []
+    releaseYear = try container.decodeLossyIntIfPresent(forKey: .releaseYear)
+    trackNumber = try container.decodeLossyIntIfPresent(forKey: .trackNumber)
     uploadDate = try container.decodeIfPresent(String.self, forKey: .uploadDate)
     timestamp = try container.decodeLossyDoubleIfPresent(forKey: .timestamp)
     viewCount = try container.decodeLossyInt64IfPresent(forKey: .viewCount)
