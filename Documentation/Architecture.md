@@ -31,6 +31,25 @@ that does not run on the main actor. This provides a single ownership point for
 Python's global interpreter state while allowing concurrent Swift callers to
 suspend safely.
 
+Once the C bridge starts initialization, failure is terminal for the process.
+If CPython starts but bootstrap compilation, imports, or API validation fail,
+the bridge records a permanent failed state, consumes the Python exception,
+and detaches the initializing thread with the GIL released before returning.
+The interpreter and any imported modules remain allocated until process exit;
+YTDLPKit cannot execute them or enter initialization again. Both the C bridge
+and Swift coordinator reject subsequent clients and requests with the retained
+initialization failure, including attempts to switch modules or challenge
+providers. **Retry requires a process restart**, after fixing the dependency.
+
+YTDLPKit does not finalize and reinitialize after bootstrap failure: imported
+extensions may retain process state that is unsafe to initialize twice (see
+[CPython's finalization caveats](https://docs.python.org/3.13/c-api/init.html#c.Py_FinalizeEx)).
+Resource validation failures before entering the C bridge leave the coordinator
+pending, so a new client may correct a path or digest before initialization starts.
+The existing module and challenge-provider identity checks still apply during
+initialization and after success. An interpreter initialized outside this bridge
+is rejected rather than adopted or finalized.
+
 Cancellation is checked before scheduling, from a thread-safe yt-dlp progress
 hook where upstream execution permits it, and after Python returns. A cancelled
 task can still wait briefly for an upstream operation that cannot be safely

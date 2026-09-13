@@ -10,7 +10,11 @@ static pthread_mutex_t execution_lock = PTHREAD_MUTEX_INITIALIZER;
 static ytdlpkit_log_callback active_log_callback = NULL;
 static ytdlpkit_cancel_callback active_cancel_callback = NULL;
 static void *active_context = NULL;
-static bool initialized = false;
+// Protected by execution_lock. Failed is terminal even if CPython is alive:
+// imported extensions cannot in general be safely finalized and initialized again.
+static enum { RUNTIME_PENDING, RUNTIME_READY, RUNTIME_FAILED } runtime_state = RUNTIME_PENDING;
+static char *initialization_failure = NULL;
+static const char *failure_fallback = "Python initialization failed. Restart the process before retrying.";
 
 static char *copy_string(const char *value) {
   if (value == NULL) return NULL;
@@ -18,6 +22,29 @@ static char *copy_string(const char *value) {
   char *copy = malloc(length + 1);
   if (copy != NULL) memcpy(copy, value, length + 1);
   return copy;
+}
+
+// Takes ownership of detail and releases execution_lock. Only detach when our
+// initialization call left this thread attached to CPython with the GIL held.
+static bool fail_initialization(char *detail, bool detach_thread, char **error) {
+  const char *reason = detail == NULL ? "Python initialization failed" : detail;
+  const char *suffix = ". Restart the process before retrying.";
+  size_t length = strlen(reason) + strlen(suffix) + 1;
+  initialization_failure = malloc(length);
+  if (initialization_failure != NULL)
+    snprintf(initialization_failure, length, "%s%s", reason, suffix);
+  free(detail);
+  runtime_state = RUNTIME_FAILED;
+  if (detach_thread) {
+    // Error rendering can itself raise. Leave no pending exception on the
+    // retained thread state, then release it just as on successful bootstrap.
+    PyErr_Clear();
+    PyEval_SaveThread();
+  }
+  if (error != NULL)
+    *error = copy_string(initialization_failure == NULL ? failure_fallback : initialization_failure);
+  pthread_mutex_unlock(&execution_lock);
+  return false;
 }
 
 static char *python_error(void) {
@@ -117,9 +144,19 @@ bool ytdlpkit_python_initialize(
     char **error) {
   if (error != NULL) *error = NULL;
   pthread_mutex_lock(&execution_lock);
-  if (initialized) {
+  if (runtime_state == RUNTIME_READY) {
     pthread_mutex_unlock(&execution_lock);
     return true;
+  }
+  if (runtime_state == RUNTIME_FAILED) {
+    if (error != NULL)
+      *error = copy_string(initialization_failure == NULL ? failure_fallback : initialization_failure);
+    pthread_mutex_unlock(&execution_lock);
+    return false;
+  }
+  if (Py_IsInitialized()) {
+    return fail_initialization(
+        copy_string("CPython was initialized outside YTDLPKit"), false, error);
   }
 
   PyPreConfig preconfig;
@@ -128,15 +165,12 @@ bool ytdlpkit_python_initialize(
   preconfig.utf8_mode = 1;
   PyStatus status = Py_PreInitialize(&preconfig);
   if (PyStatus_Exception(status)) {
-    if (error != NULL) *error = copy_string(status.err_msg);
-    pthread_mutex_unlock(&execution_lock);
-    return false;
+    return fail_initialization(copy_string(status.err_msg), false, error);
   }
 
   if (PyImport_AppendInittab("_ytdlpkit_native", PyInit__ytdlpkit_native) == -1) {
-    if (error != NULL) *error = copy_string("Could not register the native Python bridge");
-    pthread_mutex_unlock(&execution_lock);
-    return false;
+    return fail_initialization(
+        copy_string("Could not register the native Python bridge"), false, error);
   }
 
   PyConfig config;
@@ -149,36 +183,35 @@ bool ytdlpkit_python_initialize(
   config.buffered_stdio = 0;
   config.module_search_paths_set = 1;
 
+  char *configuration_error = NULL;
   wchar_t *home = Py_DecodeLocale(python_home, NULL);
   status = home == NULL
       ? PyStatus_Error("Could not decode the Python home path")
       : PyConfig_SetString(&config, &config.home, home);
   PyMem_RawFree(home);
-  if (!PyStatus_Exception(status) && !append_path(&config, stdlib_zip, error))
+  if (!PyStatus_Exception(status) && !append_path(&config, stdlib_zip, &configuration_error))
     status = PyStatus_Error("Could not add the standard-library path");
-  if (!PyStatus_Exception(status) && !append_path(&config, platform_library, error))
+  if (!PyStatus_Exception(status) && !append_path(&config, platform_library, &configuration_error))
     status = PyStatus_Error("Could not add the platform-library path");
-  if (!PyStatus_Exception(status) && !append_path(&config, dynamic_modules, error))
+  if (!PyStatus_Exception(status) && !append_path(&config, dynamic_modules, &configuration_error))
     status = PyStatus_Error("Could not add the dynamic-module path");
-  if (!PyStatus_Exception(status) && !append_path(&config, certifi_module, error))
+  if (!PyStatus_Exception(status) && !append_path(&config, certifi_module, &configuration_error))
     status = PyStatus_Error("Could not add the certifi path");
-  if (!PyStatus_Exception(status) && !append_path(&config, ytdlp_module, error))
+  if (!PyStatus_Exception(status) && !append_path(&config, ytdlp_module, &configuration_error))
     status = PyStatus_Error("Could not add the yt-dlp path");
-  if (!PyStatus_Exception(status) && !append_path(&config, plugin_module, error))
+  if (!PyStatus_Exception(status) && !append_path(&config, plugin_module, &configuration_error))
     status = PyStatus_Error("Could not add the plugin path");
   if (PyStatus_Exception(status)) {
-    if (error != NULL && *error == NULL) *error = copy_string(status.err_msg);
+    if (configuration_error == NULL) configuration_error = copy_string(status.err_msg);
     PyConfig_Clear(&config);
-    pthread_mutex_unlock(&execution_lock);
-    return false;
+    return fail_initialization(configuration_error, false, error);
   }
 
   status = Py_InitializeFromConfig(&config);
+  if (PyStatus_Exception(status)) configuration_error = copy_string(status.err_msg);
   PyConfig_Clear(&config);
   if (PyStatus_Exception(status)) {
-    if (error != NULL) *error = copy_string(status.err_msg);
-    pthread_mutex_unlock(&execution_lock);
-    return false;
+    return fail_initialization(configuration_error, PyThreadState_GetUnchecked() != NULL, error);
   }
 
   static const char *bootstrap =
@@ -234,19 +267,19 @@ bool ytdlpkit_python_initialize(
 
   PyObject *main = PyImport_AddModule("__main__");
   PyObject *globals = main == NULL ? NULL : PyModule_GetDict(main);
-  PyObject *code = Py_CompileString(bootstrap, "<YTDLPKit bootstrap>", Py_file_input);
+  PyObject *code = globals == NULL
+      ? NULL
+      : Py_CompileString(bootstrap, "<YTDLPKit bootstrap>", Py_file_input);
   PyObject *bootstrap_result = (code == NULL || globals == NULL)
       ? NULL
       : PyEval_EvalCode(code, globals, globals);
   Py_XDECREF(code);
   if (bootstrap_result == NULL) {
-    if (error != NULL) *error = python_error();
-    pthread_mutex_unlock(&execution_lock);
-    return false;
+    return fail_initialization(python_error(), true, error);
   }
   Py_DECREF(bootstrap_result);
 
-  initialized = true;
+  runtime_state = RUNTIME_READY;
   PyEval_SaveThread();
   pthread_mutex_unlock(&execution_lock);
   return true;
@@ -260,8 +293,10 @@ ytdlpkit_python_result ytdlpkit_python_execute(
     void *context) {
   ytdlpkit_python_result result = {0};
   pthread_mutex_lock(&execution_lock);
-  if (!initialized) {
-    result.error = copy_string("Python has not been initialized");
+  if (runtime_state != RUNTIME_READY) {
+    result.error = copy_string(runtime_state == RUNTIME_FAILED
+        ? (initialization_failure == NULL ? failure_fallback : initialization_failure)
+        : "Python has not been initialized");
     pthread_mutex_unlock(&execution_lock);
     return result;
   }

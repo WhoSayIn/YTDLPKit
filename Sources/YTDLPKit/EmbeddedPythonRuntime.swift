@@ -37,6 +37,7 @@
       case pending
       case initializing(resources: PythonResourceLayout, task: Task<Void, any Error>)
       case ready(resources: PythonResourceLayout)
+      // Mirrors the bridge's terminal failure; never retry CPython in this process.
       case failed(YTDLPError)
     }
 
@@ -261,7 +262,7 @@
     }
   }
 
-  private struct PythonResourceLayout: Sendable {
+  struct PythonResourceLayout: Sendable {
     private static let certifiDigest =
       "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
     private static let pluginDigest =

@@ -57,6 +57,7 @@ jobs:
           -scheme YTDLPKit
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
           -only-testing:YTDLPKitTests/EmbeddedRuntimeSmokeTests
+          -only-testing:YTDLPKitBootstrapFailureTests
           CODE_SIGNING_ALLOWED=NO
 
   documentation:

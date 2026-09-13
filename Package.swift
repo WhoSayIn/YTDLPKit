@@ -70,6 +70,7 @@ let package = Package(
       name: "YTDLPKitTests",
       dependencies: ["YTDLPKit"],
       path: "Tests",
+      exclude: ["BootstrapFailureTests", "PythonBootstrapProbe"],
       sources: ["YTDLPKitTests"],
       resources: [
         .process("Fixtures")
@@ -77,6 +78,24 @@ let package = Package(
       swiftSettings: [
         .enableUpcomingFeature("ExistentialAny")
       ]
+    ),
+    // A separate runner process: this regression deliberately poisons CPython.
+    .testTarget(
+      name: "YTDLPKitBootstrapFailureTests",
+      dependencies: [
+        "YTDLPKit",
+        .target(name: "CYTDLPPythonBridge", condition: .when(platforms: [.iOS])),
+        .target(name: "PythonBootstrapProbe", condition: .when(platforms: [.iOS])),
+      ],
+      path: "Tests/BootstrapFailureTests",
+      resources: [.copy("Fixtures")],
+      swiftSettings: [.enableUpcomingFeature("ExistentialAny")]
+    ),
+    .target(
+      name: "PythonBootstrapProbe",
+      dependencies: ["PythonRuntime"],
+      path: "Tests/PythonBootstrapProbe",
+      publicHeadersPath: "include"
     ),
   ] + pythonBinaryTargets,
   swiftLanguageModes: [.v6]
