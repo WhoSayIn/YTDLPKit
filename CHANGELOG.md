@@ -5,6 +5,12 @@ All notable changes to YTDLPKit will be documented here. The project follows
 
 ## Unreleased
 
+- Contain embedded CPython bootstrap failures in a terminal process state, release
+  the initializing thread's GIL, and reject later initialization and execution.
+  Fixing an incompatible bootstrap dependency requires a process restart.
+- Add an isolated, network-free iOS regression for incompatible yt-dlp bootstrap,
+  GIL handoff, bridge retries, and later client creation with different identities.
+
 ## 0.1.2 - 2026-09-11
 
 - Reuse the process-wide SHA-256-validated embedded resource layout across clients while preserving first-use validation and module identity mismatch rejection.

@@ -128,6 +128,7 @@ xcodebuild test \
   -scheme YTDLPKit \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
   -only-testing:YTDLPKitTests/EmbeddedRuntimeSmokeTests \
+  -only-testing:YTDLPKitBootstrapFailureTests \
   CODE_SIGNING_ALLOWED=NO
 ```
 
@@ -135,6 +136,13 @@ The test initializes the packaged interpreter and imports `ssl`, `hashlib`,
 `json`, and `yt_dlp`. Release validation also inspects a built consumer app for
 the Python framework, standard-library ZIP, and all extension frameworks. A
 compile-only result is not runtime proof.
+
+The separate `YTDLPKitBootstrapFailureTests` runner loads an intentionally
+incompatible local module. It verifies the failed interpreter's GIL/thread
+handoff and terminal rejection of bridge calls and subsequent Swift clients.
+Keep this target in a fresh process; it must not share an interpreter with the
+successful smoke test. The same selection can run on a signed physical-device
+destination for device runtime validation.
 
 ## Provenance
 

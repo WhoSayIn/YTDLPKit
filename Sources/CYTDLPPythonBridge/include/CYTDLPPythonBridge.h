@@ -20,6 +20,11 @@ typedef struct {
 
 /// Initializes CPython exactly once and imports the selected yt-dlp module.
 /// Every path must be an absolute, validated filesystem path.
+/// The Swift coordinator enforces process-wide module/provider identity.
+/// Failure is terminal, even when CPython itself has already started. A failed
+/// bootstrap retains the interpreter until process exit with its thread state
+/// detached and GIL released; later initialization and execution are rejected.
+/// Correcting a bootstrap dependency requires restarting the process.
 bool ytdlpkit_python_initialize(
     const char *python_home,
     const char *stdlib_zip,
