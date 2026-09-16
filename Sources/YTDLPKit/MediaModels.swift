@@ -8,6 +8,7 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
   public let duration: TimeInterval?
   public let uploader: String?
   public let channel: String?
+  public let channelID: String?
   public let track: String?
   public let artists: [String]
   public let album: String?
@@ -47,6 +48,7 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
     case albumArtists = "album_artists"
     case releaseYear = "release_year"
     case trackNumber = "track_number"
+    case channelID = "channel_id"
   }
 
   public init(from decoder: any Decoder) throws {
@@ -57,6 +59,7 @@ public struct MediaInfo: Decodable, Sendable, Equatable {
     duration = try container.decodeLossyDoubleIfPresent(forKey: .duration)
     uploader = try container.decodeIfPresent(String.self, forKey: .uploader)
     channel = try container.decodeIfPresent(String.self, forKey: .channel)
+    channelID = try container.decodeIfPresent(String.self, forKey: .channelID)
     track = try container.decodeIfPresent(String.self, forKey: .track)
     artists = try container.decodeIfPresent([String].self, forKey: .artists) ?? []
     album = try container.decodeIfPresent(String.self, forKey: .album)
