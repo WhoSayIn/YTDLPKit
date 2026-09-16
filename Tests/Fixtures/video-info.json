@@ -4,6 +4,7 @@
   "webpage_url": "https://www.youtube.com/watch?v=fixture-video",
   "duration": 123.5,
   "uploader": "Fixture Channel",
+  "channel_id": "UCfixtureChannel01",
   "description": "Recorded metadata used without a network request.",
   "chapters": [
     {"title": "Introduction", "start_time": 0, "end_time": 40.5},

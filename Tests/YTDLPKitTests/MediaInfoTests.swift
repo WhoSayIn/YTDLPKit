@@ -11,6 +11,7 @@ final class MediaInfoTests: XCTestCase {
     XCTAssertEqual(info.id, "fixture-video")
     XCTAssertEqual(info.title, "Fixture Video")
     XCTAssertEqual(info.duration, 123.5)
+    XCTAssertEqual(info.channelID, "UCfixtureChannel01")
     XCTAssertEqual(info.formats.count, 4)
     XCTAssertEqual(info.requestedFormats.map(\.id), ["137", "140"])
     XCTAssertEqual(info.subtitles.map(\.language), ["en", "tr"])
@@ -51,6 +52,7 @@ final class MediaInfoTests: XCTestCase {
         "title": "Metadata",
         "uploader": "Uploader",
         "channel": "Channel",
+        "channel_id": "UCmetadataChannel01",
         "track": "Canonical Track",
         "artists": ["Artist One", "Artist Two"],
         "album": "Album",
@@ -71,6 +73,7 @@ final class MediaInfoTests: XCTestCase {
     let info = try JSONDecoder().decode(MediaInfo.self, from: payload)
 
     XCTAssertEqual(info.channel, "Channel")
+    XCTAssertEqual(info.channelID, "UCmetadataChannel01")
     XCTAssertEqual(info.track, "Canonical Track")
     XCTAssertEqual(info.artists, ["Artist One", "Artist Two"])
     XCTAssertEqual(info.album, "Album")

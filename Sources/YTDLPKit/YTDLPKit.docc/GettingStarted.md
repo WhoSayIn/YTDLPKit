@@ -53,7 +53,7 @@ and completeness depend on the upstream extractor and source.
 
 `MediaInfo` includes source-neutral music metadata such as track, artists, album,
 album artists, release year, and track number, plus presentation metadata such as
-channel, upload date, timestamp, view count, like count, chapters, manual subtitles,
+channel name and canonical channel ID, upload date, timestamp, view count, like count, chapters, manual subtitles,
 and automatic captions when the extractor supplies them. Scalar fields except `id`
 and `title` are optional, and music-artist arrays may be empty, because flat search
 results are often incomplete.
